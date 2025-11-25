@@ -1,0 +1,38 @@
+<div class="login-wrapper bg-primary">
+    <div class="card bg-secondary">
+        <h1>Iniciar Sesión</h1>
+        <form [formGroup]="loginForm" (ngSubmit)="iniciarSesion()"> 
+            <div>
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Correo Electrónico</mat-label>
+                    <input matInput type="email" formControlName="email" required>
+                    <mat-error *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched">
+                        El correo es obligatorio.
+                    </mat-error>
+                    <mat-error *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched">
+                        Formato de correo inválido.
+                    </mat-error>
+                </mat-form-field>
+                
+                <mat-form-field appearance="fill" class="full-width">
+                    <mat-label>Contraseña</mat-label>
+                    <input matInput type="password" formControlName="password" required>
+                    <mat-error *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched">
+                        La contraseña es obligatoria.
+                    </mat-error>
+                    <mat-error *ngIf="loginForm.get('password')?.hasError('minlength') && loginForm.get('password')?.touched">
+                        Mínimo 6 caracteres.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <p-button 
+                label="Submit" 
+                type="submit" 
+                [disabled]="loginForm.invalid"
+            />
+            
+            <button mat-raised-button color="primary" type="submit">Iniciar Sesión (Material)</button>
+        </form>
+    </div>
+</div>
