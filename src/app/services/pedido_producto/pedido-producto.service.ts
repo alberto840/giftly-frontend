@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Usuario } from '../../models/usuario.model';
+import { PedidoProducto } from '../../models/pedido_producto.model';
 import { ApiResponse } from '../../models/apiResponse.model';
 
 @Injectable({ providedIn: 'root' })
-export class UserService {
-  private baseUrl = environment.apiUrl + 'api/v1/usuario';
+export class PedidoProductoService {
+  private baseUrl = environment.apiUrl + 'api/v1/pedidoProducto';
 
   constructor(private http: HttpClient) { }
 
@@ -16,27 +16,27 @@ export class UserService {
     return new HttpHeaders({ 'Authorization': `Bearer ${token}` });
   }
 
-  getAll(): Observable<Usuario[]> {
+  getAll(): Observable<PedidoProducto[]> {
     return this.http
-      .get<ApiResponse<Usuario[]>>(this.baseUrl, { headers: this.authHeaders() })
+      .get<ApiResponse<PedidoProducto[]>>(this.baseUrl, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
   }
 
-  getById(id: number): Observable<Usuario> {
+  getById(id: number): Observable<PedidoProducto> {
     return this.http
-      .get<ApiResponse<Usuario>>(`${this.baseUrl}/${id}`, { headers: this.authHeaders() })
+      .get<ApiResponse<PedidoProducto>>(`${this.baseUrl}/${id}`, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
   }
 
-  crear(body: Usuario): Observable<Usuario> {
+  crear(body: PedidoProducto): Observable<PedidoProducto> {
     return this.http
-      .post<ApiResponse<Usuario>>(`${this.baseUrl}/crear`, body, { headers: this.authHeaders() })
+      .post<ApiResponse<PedidoProducto>>(`${this.baseUrl}/crear`, body, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
   }
 
-  actualizar(id: number, body: Usuario): Observable<Usuario> {
+  actualizar(id: number, body: PedidoProducto): Observable<PedidoProducto> {
     return this.http
-      .put<ApiResponse<Usuario>>(`${this.baseUrl}/actualizar/${id}`, body, { headers: this.authHeaders() })
+      .put<ApiResponse<PedidoProducto>>(`${this.baseUrl}/actualizar/${id}`, body, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
   }
 
