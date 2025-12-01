@@ -1,1 +1,67 @@
-<p>rewards works!</p>
+<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4 relative overflow-hidden">
+    <!-- Grid Background Pattern -->
+    <div class="absolute inset-0 z-0 opacity-10"
+        style="background-image: linear-gradient(#a855f7 1px, transparent 1px), linear-gradient(90deg, #a855f7 1px, transparent 1px); background-size: 20px 20px;">
+    </div>
+
+    <div class="relative w-full max-w-md z-10 flex flex-col items-center gap-6">
+
+        <!-- User Avatar -->
+        <div class="bg-purple-200 rounded-full p-6 border-4 border-purple-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-purple-500" viewBox="0 0 20 20"
+                fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+            </svg>
+        </div>
+
+        <!-- Greeting -->
+        <h1 class="text-3xl font-bold text-purple-800">¿Hola, {{ user.nombre }}</h1>
+
+        <!-- Basic Info Card -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg w-full border border-purple-100">
+            <h2 class="text-purple-800 font-bold text-lg mb-2">Información Básica</h2>
+            <div class="bg-white border border-purple-200 rounded-lg p-3 mb-2 text-gray-600">
+                {{ user.email }}
+            </div>
+            <div class="flex justify-between text-sm text-purple-800 font-medium">
+                <span>Miembro dese:</span>
+                <span>{{ user.miembroDesde }}</span>
+            </div>
+        </div>
+
+        <!-- Points Card -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg w-full border border-purple-100 relative">
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                    <p class="text-purple-800 text-sm font-bold">Mis puntos</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-5xl font-bold text-gray-600">{{ user.puntos | number }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" viewBox="0 0 20 20"
+                            fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <p class="text-purple-800 text-xs font-bold">Puntos Disponibles</p>
+                </div>
+                <span class="text-gray-600 text-sm font-medium">Nivel {{ user.nivel }}.</span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-purple-100 rounded-full h-2.5 mb-4">
+                <div class="bg-purple-600 h-2.5 rounded-full"
+                    [style.width.%]="(user.puntos / user.siguienteNivel) * 100"></div>
+            </div>
+
+            <p class="text-gray-600 text-xs mb-6">Siguiente recompenza a los {{ user.siguienteNivel | number }} Ptos.
+                Sigue adelante!</p>
+
+            <button
+                class="w-full bg-purple-400/80 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-500 transition-colors">
+                Ver Historial de Puntos
+            </button>
+        </div>
+
+    </div>
+</div>

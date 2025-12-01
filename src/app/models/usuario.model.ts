@@ -1,4 +1,4 @@
-export interface Usuario {
+export interface UsuarioModel {
   id: number;
   nombreCompl: string;
   email: string;
