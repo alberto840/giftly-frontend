@@ -16,6 +16,7 @@ interface EventItem {
   icon?: string;
   color?: string;
   image?: string;
+  description?: string;
 }
 
 @Component({
@@ -30,10 +31,11 @@ export class GameComponent {
   value1: number = 20;
   constructor() {
     this.events = [
-      { status: 'Inicio', date: '15/10/2020 10:30', icon: 'pi pi-shopping-cart', color: '#9C27B0', image: 'game-controller.jpg' },
-      { status: 'Comestibles', date: '15/10/2020 14:00', icon: 'pi pi-cog', color: '#673AB7' },
-      { status: 'Bebidas', date: '15/10/2020 16:15', icon: 'pi pi-shopping-cart', color: '#FF9800' },
-      { status: 'Souvenir', date: '16/10/2020 10:00', icon: 'pi pi-check', color: '#607D8B' }
+      { status: 'Inicio', date: '15/10/2020 10:30', icon: 'fa-solid fa-circle-play', color: '#9C27B0', image: 'game-controller.jpg', description: 'Tenemos una variedad de flores para ti' },
+      { status: 'Flores', date: '15/10/2020 14:00', icon: 'fa-solid fa-fan', color: '#673AB7', description: 'Agrega los comestibles que desees para endulzar tu regalo' },
+      { status: 'Comestibles', date: '15/10/2020 14:00', icon: 'fa-solid fa-utensils', color: '#673AB7', description: 'Agrega los comestibles que desees para endulzar tu regalo' },
+      { status: 'Bebidas', date: '15/10/2020 16:15', icon: 'fa-solid fa-wine-glass', color: '#FF9800', description: 'Agrega las bebidas favorita de tu persona favorita' },
+      { status: 'Souvenir', date: '16/10/2020 10:00', icon: 'fa-solid fa-gift', color: '#607D8B', description: 'Necesitas un souvenir? Tenemos lo indicado para esa persona' }
     ];
   }
 
