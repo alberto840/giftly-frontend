@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
@@ -11,7 +11,7 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class PaymentCheckComponent {
 
-  constructor(private router: Router) { }
+  private router = inject(Router);
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
@@ -27,5 +27,13 @@ export class PaymentCheckComponent {
       console.log('Pedido cancelado');
       this.router.navigate(['/']);
     }
+  }
+
+  navigateForward() {
+    this.router.navigate(['/payment-check']);
+  }
+
+  navigateBack() {
+    this.router.navigate(['/more-details']);
   }
 }

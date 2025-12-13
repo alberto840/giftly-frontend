@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-rewards',
@@ -10,6 +10,7 @@ import { RouterModule } from '@angular/router';
   styleUrl: './rewards.component.css'
 })
 export class RewardsComponent implements OnInit {
+  private router = inject(Router);
   user: any = {
     nombre: 'Usuario',
     email: 'correo@example.com',
@@ -25,5 +26,9 @@ export class RewardsComponent implements OnInit {
     // if (userData) {
     //   this.user = JSON.parse(userData);
     // }
+  }
+
+  navigateToMessage() {
+    this.router.navigate(['/message']);
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -13,9 +13,10 @@ import { CommonModule } from '@angular/common';
 export class MoreDetailsComponent {
   detailsForm: FormGroup;
 
+  private router = inject(Router);
+
   constructor(
     private fb: FormBuilder,
-    private router: Router
   ) {
     this.detailsForm = this.fb.group({
       detalle: ['', Validators.required]
@@ -31,5 +32,13 @@ export class MoreDetailsComponent {
     } else {
       this.detailsForm.markAllAsTouched();
     }
+  }
+
+  navigateForward() {
+    this.router.navigate(['/payment-check']);
+  }
+
+  navigateBack() {
+    this.router.navigate(['/location']);
   }
 }

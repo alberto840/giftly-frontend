@@ -1,7 +1,9 @@
-<div class="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-    <div class="relative w-full">
-        <h1 class="text-center">Juego Principal</h1>
-        <!-- Main Card -->
+<div class="fondo-pantalla min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+
+    <div class="w-full flex justify-center">
+        <img src=".//public/logo.png" alt="Logo" class="w-[150px]">
+    </div>
+    <div class="flex w-full">
         <p-timeline [value]="events" align="alternate" styleClass="customized-timeline">
             <ng-template pTemplate="marker" let-event>
                 <span class="flex w-8 h-8 items-center justify-center text-white rounded-full z-10 shadow-sm"
@@ -11,11 +13,13 @@
             </ng-template>
             <ng-template pTemplate="content" let-event>
                 <p-card>
-                    <p-panel [header]="event.status" [toggleable]="true" [collapsed]="true">
+                    <p-panel [header]="event.status === 'Inicio' ? '¡Empieza a ganar!' : event.status"
+                        [toggleable]="true" [collapsed]="(event.status === 'Inicio')? false : true">
                         <div class="w-full">
                             <p>
                                 {{ event.description }}
                             </p>
+                            @if (event.status !== 'Inicio') {
                             <p-carousel [value]="products" [numVisible]="1" [numScroll]="1" [circular]="false">
                                 <ng-template let-product #item>
                                     <div class="border border-surface rounded-border m-2 p-4">
@@ -46,21 +50,47 @@
                                     </div>
                                 </ng-template>
                             </p-carousel>
+                            }
                         </div>
-                        <p-button label="Read more" [text]="true" />
+                        @if (event.status === 'Inicio') {
+                        <p-button label="¿Como Funciona?" [text]="true" />
+                        } @else {
+                        <p-button label="Leer más" [text]="true" />
+                        }
                     </p-panel>
                 </p-card>
             </ng-template>
         </p-timeline>
     </div>
 </div>
-
-<button class="fixed bottom-6 right-6
-           w-[40px] h-[40px] 
-           flex items-center justify-center 
-           bg-secondary text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:bg-primary 
-           focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2"
-    aria-label="Subir a la parte superior">
+<button class="fixed bottom-6 right-6 w-[40px] h-[40px] flex items-center justify-center
+    bg-secondary text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:bg-primary
+    focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2" aria-label="Subir a la parte superior"
+    (click)="navigateToMessage()">
 
     <i class="fa-solid fa-circle-arrow-right fa-xl"></i>
 </button>
+<div class="fixed bg-primary top-4 right-0 w-[140px] h-[60px] rounded-l-full" aria-label="Subir a la parte superior">
+    <button class="fixed top-6 right-6 w-[40px] h-[40px] flex items-center justify-center
+    bg-secondary text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:bg-warning
+    focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2" aria-label="Subir a la parte superior"
+        (click)="navigateToMessage()" hidden>
+
+        <i class="fa-solid fa-user fa-lg"></i>
+    </button>
+    <button class="fixed top-6 right-6 w-[40px] h-[40px] flex items-center justify-center
+    bg-secondary text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:bg-warning
+    focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2" aria-label="Subir a la parte superior"
+        (click)="navigateToLogin()">
+
+        <i class="fa-solid fa-arrow-right-to-bracket fa-lg"></i>
+    </button>
+    <button class="fixed top-6 right-20 w-[40px] h-[40px] flex items-center justify-center
+    bg-secondary text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:bg-warning
+    focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2" aria-label="Subir a la parte superior"
+        (click)="navigateToRegister()">
+
+        <i class="fa-solid fa-user-plus fa-lg"></i>
+    </button>
+
+</div>

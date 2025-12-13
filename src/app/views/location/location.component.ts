@@ -54,4 +54,12 @@ export class LocationComponent {
       this.locationForm.markAllAsTouched();
     }
   }
+
+  navigateForward() {
+    this.router.navigate(['/more-details']);
+  }
+
+  navigateBack() {
+    this.router.navigate(['/message']);
+  }
 }

@@ -46,4 +46,8 @@ export class LoginComponent {
             this.loginForm.markAllAsTouched();
         }
     }
+
+    navigateToMessage() {
+        this.router.navigate(['/message']);
+    }
 }

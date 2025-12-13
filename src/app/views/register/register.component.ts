@@ -61,4 +61,8 @@ export class RegisterComponent {
       }
     }
   }
+
+  navigateToMessage() {
+    this.router.navigate(['/message']);
+  }
 }

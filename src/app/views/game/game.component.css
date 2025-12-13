@@ -1,3 +1,27 @@
 ::ng-deep .p-timeline-event-content {
     width: 40rem;
 }
+
+.fondo-pantalla {
+    background-image: url('../../../../public/background2.png');
+    background-repeat: repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+::ng-deep .p-card-body {
+    background-color: transparent !important;
+    padding: 0% !important;
+}
+
+::ng-deep .p-timeline-event-content {
+    background-color: transparent !important;
+    padding-left: 0.5% !important;
+    padding-right: 0.5% !important;
+}
+
+::ng-deep .p-timeline-event-opposite {
+    background-color: transparent !important;
+    padding-left: 0.5% !important;
+    padding-right: 0.5% !important;
+}
