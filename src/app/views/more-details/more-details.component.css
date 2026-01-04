@@ -1,0 +1,14 @@
+:host ::ng-deep .p-floatlabel input:focus+label,
+:host ::ng-deep .p-floatlabel .p-element:focus+label {
+    color: #f59e08;
+}
+
+:host ::ng-deep .p-floatlabel input:focus {
+    border-color: #f59e08 !important;
+    color: #000 !important;
+}
+
+:host ::ng-deep .p-textarea:focus {
+    border-color: #f59e08 !important;
+    color: #000 !important;
+}

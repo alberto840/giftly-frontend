@@ -1,0 +1,98 @@
+<div class="inline-flex items-center justify-center gap-2">
+    @switch (type) {
+        @case ('game') {
+            <i class="fa-solid fa-gift"></i>
+            <span class="font-bold whitespace-nowrap">
+                ¿Como funciona GiftLy?
+            </span>
+        }
+        @case ('message') {
+            <i class="fa-solid fa-envelope"></i>
+            <span class="font-bold whitespace-nowrap">
+                ¿Como enviaremos tu mensaje?
+            </span>
+        }
+        @case ('location') {
+            <i class="fa-solid fa-location-dot"></i>
+            <span class="font-bold whitespace-nowrap">
+                ¿Como funciona el envio del regalo?
+            </span>
+        }
+        @case ('more-details') {
+            <i class="fa-solid fa-phone-volume"></i>
+            <span class="font-bold whitespace-nowrap">
+                Es necesaria la comunicación con el cliente.
+            </span>
+        }
+        @case ('payment') {
+            <i class="fa-solid fa-gift"></i>
+            <span class="font-bold whitespace-nowrap">
+                ¡Estas a un pago de confirmar tu regalo!
+            </span>
+        }
+        @default {
+        Default case.
+        }
+    }
+</div>
+<span class="p-text-secondary block mb-8">Update your information.</span>
+<div class="flex items-center gap-4 mb-4">
+    @switch (type) {
+        @case ('game') {
+            <span class="font-bold whitespace-nowrap">
+                Giftly es un servicio que te permite enviar regalos personalizados a tus seres queridos.
+            </span>
+            <span class="font-bold whitespace-nowrap">
+                Tienes es proceso de personalización, envio y confirmación de tu regalo.
+            </span>
+            <span class="font-bold whitespace-nowrap">
+                ¡Sin embargo hay mucho mas!
+            </span>
+            <span class="font-bold whitespace-nowrap">
+                Al comprar tu regalo tienes la posibilidad de ganar puntos los cuales puedes convertirlos en descuentos.
+            </span>
+            <span class="font-bold whitespace-nowrap">
+                ¿Eso es todo?
+            </span>
+            <span class="font-bold whitespace-nowrap">
+                No, hay mucho mas!
+            </span>
+            <span class="font-bold whitespace-nowrap">
+                Puedes Registrarte e invitar a tus seres queridos, así tambien ganar puntos y recompensas.
+            </span>
+            <span class="font-bold whitespace-nowrap">
+                ¿Nada mas?
+            </span>
+            <span class="font-bold whitespace-nowrap">
+                No, hay mucho mas! Siguenos en nuestras redes sociales para estar al tanto de nuestras ofertas y novedades.
+            </span>
+        }
+        @case ('message') {
+            <span class="font-bold whitespace-nowrap">
+                Tu mensaje se enviara al objetivo del regalo en una tarjeta se leerá el emisor del mensaje, su receptor y el mensaje.
+            </span>
+        }
+        @case ('location') {
+            <span class="font-bold whitespace-nowrap">
+                Es importante que verifique los campos de ubicación para que el delivery pueda realizar el servicio correctamente.
+            </span>
+        }
+        @case ('more-details') {
+            <span class="font-bold whitespace-nowrap">
+                Es indispensable tu informacion de contacto para que podamos enviarte la confirmacion del servicio y responder cualquier duda.
+            </span>
+        }
+        @case ('payment') {
+            <span class="font-bold whitespace-nowrap">
+                Ahora revisa los detalles de tu regalo y confirma el pago entregando el comprobante.
+            </span>
+            <span class="font-bold whitespace-nowrap">
+                Se te enviará la confirmación del pedido y solo quedará esperar al regalo.
+            </span>
+        }
+        @default {
+        Default case.
+        }
+    }
+</div>
+<p-button label="Cancel" [text]="true" severity="secondary" />

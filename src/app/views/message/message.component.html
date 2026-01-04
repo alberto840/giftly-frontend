@@ -2,7 +2,7 @@
     style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
     <div class="text-2xl font-medium text-primary mb-6">
         Agrega un mensaje personalizado
-        <p-button icon="pi pi-question" severity="secondary" aria-label="Save" />
+        <p-button icon="pi pi-question" severity="secondary" aria-label="Save" (click)="openDialog()" />
     </div>
     <div class="relative w-full max-w-2xl">
         <!-- Main Card -->
@@ -31,10 +31,10 @@
         </div>
 
         <!-- Bottom Elements -->
-        <div class="absolute -bottom-14 left-0 w-full flex justify-between items-end px-8 z-20">
+        <div class="absolute -bottom-11 left-0 w-full flex justify-between items-end px-8 z-20">
             <!-- User Icon -->
             <div class="bg-primary rounded-full p-4 shadow-lg">
-                <i class="fa-regular fa-envelope text-4xl text-white"></i>
+                <i class="fa-regular fa-envelope text-2xl text-white"></i>
             </div>
         </div>
     </div>
