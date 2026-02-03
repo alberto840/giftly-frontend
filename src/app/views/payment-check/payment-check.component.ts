@@ -6,15 +6,19 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
+import { DialogService } from 'primeng/dynamicdialog';
+import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 
 @Component({
   selector: 'app-payment-check',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, TextareaModule, FloatLabelModule, InputTextModule, ButtonModule],
+  providers: [DialogService],
   templateUrl: './payment-check.component.html',
   styleUrl: './payment-check.component.css'
 })
 export class PaymentCheckComponent {
+  private dialogService = inject(DialogService);
 
   private router = inject(Router);
   events: any[];
@@ -49,5 +53,15 @@ export class PaymentCheckComponent {
 
   navigateBack() {
     this.router.navigate(['/more-details']);
+  }
+
+  openDialog() {
+    this.dialogService.open(InfoDialogComponent, {
+      showHeader: false,
+      modal: true,
+      data: {
+        type: 'payment'
+      }
+    });
   }
 }

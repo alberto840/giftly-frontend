@@ -1,13 +1,14 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+    style="background: linear-gradient(30deg, #ffffff 0%, #5046e5 100%);">
     <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl">
         <div>
-            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                Sign in to your account
-            </h2>
+            <div class="mt-6 text-center text-3xl font-bold text-gray-900">
+                Inicia sesión
+            </div>
             <p class="mt-2 text-center text-sm text-gray-600">
-                Or
+                ¿No tienes una cuenta?
                 <a routerLink="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
-                    start your 14-day free trial
+                    Registrate
                 </a>
             </p>
         </div>
@@ -19,7 +20,7 @@
                     <input id="email-address" name="email" type="email" autocomplete="email" required
                         formControlName="email"
                         class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        placeholder="Email address">
+                        placeholder="Email">
                     <div *ngIf="loginForm.get('email')?.invalid && (loginForm.get('email')?.dirty || loginForm.get('email')?.touched)"
                         class="text-red-500 text-xs mt-1">
                         <div *ngIf="loginForm.get('email')?.errors?.['required']">Email is required.</div>
@@ -31,7 +32,7 @@
                     <input id="password" name="password" type="password" autocomplete="current-password" required
                         formControlName="password"
                         class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                        placeholder="Password">
+                        placeholder="Contraseña">
                     <div *ngIf="loginForm.get('password')?.invalid && (loginForm.get('password')?.dirty || loginForm.get('password')?.touched)"
                         class="text-red-500 text-xs mt-1">
                         <div *ngIf="loginForm.get('password')?.errors?.['required']">Password is required.</div>
@@ -40,17 +41,10 @@
             </div>
 
             <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <input id="remember-me" name="remember-me" type="checkbox"
-                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
-                    <label for="remember-me" class="ml-2 block text-sm text-gray-900">
-                        Remember me
-                    </label>
-                </div>
 
                 <div class="text-sm">
                     <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
-                        Forgot your password?
+                        ¿Olvidaste tu contraseña?
                     </a>
                 </div>
             </div>
@@ -68,7 +62,7 @@
                                 clip-rule="evenodd" />
                         </svg>
                     </span>
-                    Sign in
+                    Iniciar sesión
                 </button>
             </div>
             <div *ngIf="errorMessage" class="text-red-500 text-center text-sm mt-2">
@@ -83,7 +77,16 @@
            flex items-center justify-center 
            bg-secondary text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:bg-primary 
            focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2"
-    aria-label="Subir a la parte superior">
+    aria-label="Subir a la parte superior" (click)="navigateToMessage()">
 
-    <i class="fa-solid fa-circle-arrow-right fa-xl"></i>
+    <i class="fa-solid fa-user-plus"></i>
+</button>
+<button class="fixed bottom-6 left-6
+           w-[40px] h-[40px] 
+           flex items-center justify-center 
+           bg-secondary text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:bg-primary 
+           focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2" aria-label="Subir a la parte superior"
+    (click)="navigateBack()">
+
+    <i class="fa-solid fa-circle-arrow-left fa-xl"></i>
 </button>

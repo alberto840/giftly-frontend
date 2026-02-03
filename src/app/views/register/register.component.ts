@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/user/auth.service';
-import { UsuarioModel } from '../../models/usuario.model';
+import { RegisterRequest, UsuarioModel } from '../../models/usuario.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -32,19 +32,18 @@ export class RegisterComponent {
     });
   }
 
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0] ?? null;
-  }
-
   onSubmit() {
-    if (this.registerForm.valid && this.selectedFile) {
-      const usuario: UsuarioModel = {
-        ...this.registerForm.value,
-        id: 0, // Backend handles ID
-        puntos: 0 // Default points
+    if (this.registerForm.valid) {
+      const registerRequest: RegisterRequest = {
+        usuario: {
+          ...this.registerForm.value,
+          id: 0, // Backend handles ID
+          puntos: 0 // Default points
+        },
+        password: this.registerForm.value.password
       };
 
-      this.authService.addUsuario(usuario, this.selectedFile).subscribe({
+      this.authService.register(registerRequest).subscribe({
         next: (response) => {
           console.log('User registered', response);
           this.router.navigate(['/login']);
@@ -56,13 +55,14 @@ export class RegisterComponent {
       });
     } else {
       this.registerForm.markAllAsTouched();
-      if (!this.selectedFile) {
-        this.errorMessage = 'Profile picture is required.';
-      }
     }
   }
 
   navigateToMessage() {
-    this.router.navigate(['/message']);
+    this.router.navigate(['/login']);
+  }
+
+  navigateBack() {
+    this.router.navigate(['/']);
   }
 }

@@ -30,7 +30,7 @@ export class MessageComponent {
 
   openDialog() {
     this.dialogService.open(InfoDialogComponent, {
-      width: '400px',
+      showHeader: false,
       modal: true,
       data: {
         type: 'message'

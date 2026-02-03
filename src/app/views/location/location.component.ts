@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { UbicacionService } from '../../services/ubicacion/ubicacion.service';
@@ -9,15 +9,19 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import * as L from 'leaflet';
+import { DialogService } from 'primeng/dynamicdialog';
+import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 
 @Component({
   selector: 'app-location',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterModule, FormsModule, TextareaModule, FloatLabelModule, InputTextModule, ButtonModule],
+  providers: [DialogService],
   templateUrl: './location.component.html',
   styleUrl: './location.component.css'
 })
 export class LocationComponent implements OnInit {
+  private dialogService = inject(DialogService);
   private map!: L.Map;
   private marker?: L.Marker;
 
@@ -116,5 +120,15 @@ export class LocationComponent implements OnInit {
 
   navigateBack() {
     this.router.navigate(['/message']);
+  }
+
+  openDialog() {
+    this.dialogService.open(InfoDialogComponent, {
+      showHeader: false,
+      modal: true,
+      data: {
+        type: 'message'
+      }
+    });
   }
 }

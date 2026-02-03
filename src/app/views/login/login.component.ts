@@ -48,6 +48,10 @@ export class LoginComponent {
     }
 
     navigateToMessage() {
-        this.router.navigate(['/message']);
+        this.router.navigate(['/register']);
+    }
+
+    navigateBack() {
+        this.router.navigate(['/']);
     }
 }

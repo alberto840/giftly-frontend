@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Usuario } from '../../models/usuario.model';
 import { ApiResponse } from '../../models/apiResponse.model';
+import { UsuarioModel } from '../../models/usuario.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -16,27 +16,27 @@ export class UserService {
     return new HttpHeaders({ 'Authorization': `Bearer ${token}` });
   }
 
-  getAll(): Observable<Usuario[]> {
+  getAll(): Observable<UsuarioModel[]> {
     return this.http
-      .get<ApiResponse<Usuario[]>>(this.baseUrl, { headers: this.authHeaders() })
+      .get<ApiResponse<UsuarioModel[]>>(this.baseUrl, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
   }
 
-  getById(id: number): Observable<Usuario> {
+  getById(id: number): Observable<UsuarioModel> {
     return this.http
-      .get<ApiResponse<Usuario>>(`${this.baseUrl}/${id}`, { headers: this.authHeaders() })
+      .get<ApiResponse<UsuarioModel>>(`${this.baseUrl}/${id}`, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
   }
 
-  crear(body: Usuario): Observable<Usuario> {
+  crear(body: UsuarioModel): Observable<UsuarioModel> {
     return this.http
-      .post<ApiResponse<Usuario>>(`${this.baseUrl}/crear`, body, { headers: this.authHeaders() })
+      .post<ApiResponse<UsuarioModel>>(`${this.baseUrl}/crear`, body, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
   }
 
-  actualizar(id: number, body: Usuario): Observable<Usuario> {
+  actualizar(id: number, body: UsuarioModel): Observable<UsuarioModel> {
     return this.http
-      .put<ApiResponse<Usuario>>(`${this.baseUrl}/actualizar/${id}`, body, { headers: this.authHeaders() })
+      .put<ApiResponse<UsuarioModel>>(`${this.baseUrl}/actualizar/${id}`, body, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
   }
 
