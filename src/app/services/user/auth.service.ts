@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/environment';
@@ -19,10 +19,6 @@ export class AuthService {
   }
 
   addUsuario(usuario: UsuarioModel, file?: File): Observable<UsuarioModel> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
 
     const formData = new FormData();
     formData.append('user', JSON.stringify(usuario)); // Usuario como JSON
@@ -32,8 +28,7 @@ export class AuthService {
 
     return this.http.post<UsuarioModel>(
       `${this.baseUrl}`,
-      formData,
-      { headers }
+      formData
     );
   }
 

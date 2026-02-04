@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Timeline } from 'primeng/timeline';
 import { CardModule } from 'primeng/card';
@@ -10,6 +10,7 @@ import { PanelModule } from 'primeng/panel';
 import { InputNumber } from 'primeng/inputnumber';
 import { Fluid } from 'primeng/fluid';
 import { Router } from '@angular/router';
+import { ProductoService } from '../../services/producto/producto.service';
 
 interface EventItem {
   status?: string;
@@ -27,11 +28,11 @@ interface EventItem {
   templateUrl: './game.component.html',
   styleUrl: './game.component.css'
 })
-export class GameComponent {
+export class GameComponent implements OnInit {
   private router = inject(Router);
   events: EventItem[];
   value1: number = 20;
-  constructor() {
+  constructor(private productoService: ProductoService) {
     this.events = [
       { status: 'Inicio', date: '15/10/2020 10:30', icon: 'fa-solid fa-circle-play', color: '#9C27B0', description: 'En esta plataforma puedes adquirir regalos para tus seres queridos y ademas ganar recompensas por tus compras! Que esperas para darle una sorpresa a esa persona especial?' },
       { status: 'Souvenir', date: '16/10/2020 10:00', icon: 'fa-solid fa-gift', color: '#3ab7a6ff', description: 'Necesitas un souvenir? Tenemos lo indicado para esa persona' },
@@ -117,7 +118,14 @@ export class GameComponent {
   ];
 
   ngOnInit() {
-
+    this.productoService.getAll().subscribe({
+      next: (response) => {
+        console.log('Productos', response);
+      },
+      error: (err) => {
+        console.error('Error al obtener productos', err);
+      }
+    });
   }
 
   getSeverity(status: string) {

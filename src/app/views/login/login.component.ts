@@ -30,9 +30,13 @@ export class LoginComponent {
         if (this.loginForm.valid) {
             this.authService.login(this.loginForm.value).subscribe({
                 next: (response) => {
+                    console.log('Login response', response);
                     // Assuming response contains token or user info
-                    if (response.token) {
-                        localStorage.setItem('token', response.token);
+                    if (response.data.token) {
+                        console.log('Token', response.data.token);
+                        localStorage.setItem('token', response.data.token);
+                        console.log('User', response.data.usuario);
+                        localStorage.setItem('user', JSON.stringify(response.data.usuario));
                     }
                     // Redirect to home or dashboard
                     this.router.navigate(['/']);
