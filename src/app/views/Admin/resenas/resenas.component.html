@@ -1,1 +1,97 @@
-<p>resenas works!</p>
+<div class="p-[60px] flex flex-col justify-center items-center w-full bg-primary">
+    <div class="w-full mb-3 flex items-center gap-1">
+        <div class="text-5xl text-white font-bold">Gestión de Reseñas</div>
+        <p-menu #menu [model]="items" [popup]="true" />
+        <p-button (click)="menu.toggle($event)" icon="pi pi-spin pi-cog" [rounded]="true" [outlined]="true"
+            severity="primary" [outlined]="true" />
+    </div>
+    <div class="card">
+        <p-toast></p-toast>
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+        <div class="flex justify-end mb-4">
+            <p-button label="Crear Reseña" icon="pi pi-plus" class="p-button-success"
+                (onClick)="openNew()"></p-button>
+        </div>
+
+        <p-table class="w-full" #dt [value]="resenas" [rows]="10" [paginator]="true" [globalFilterFields]="['id']"
+            [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="id"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+            [showCurrentPageReport]="true">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="id" style="min-width:5rem">ID <p-sortIcon field="id"></p-sortIcon></th>
+                    <th pSortableColumn="calificacion" style="min-width:10rem">Calificación <p-sortIcon field="calificacion"></p-sortIcon></th>
+                    <th pSortableColumn="comentario" style="min-width:20rem">Comentario <p-sortIcon field="comentario"></p-sortIcon></th>
+                    <th pSortableColumn="usuarioId" style="min-width:10rem">Usuario ID <p-sortIcon field="usuarioId"></p-sortIcon></th>
+                    <th pSortableColumn="productoId" style="min-width:10rem">Producto ID <p-sortIcon field="productoId"></p-sortIcon></th>
+                    <th>Acciones</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-resena>
+                <tr>
+                    <td>{{resena.id}}</td>
+                    <td>{{resena.calificacion}}</td>
+                    <td>{{resena.comentario}}</td>
+                    <td>{{resena.usuarioId}}</td>
+                    <td>{{resena.productoId}}</td>
+                    <td>
+                        <p-button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                            (onClick)="editResena(resena)"></p-button>
+                        <p-button icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                            (onClick)="deleteResena(resena)"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <p-dialog [(visible)]="resenaDialog" [style]="{width: '450px'}" header="Detalles de Reseña" [modal]="true"
+            styleClass="p-fluid">
+            <ng-template pTemplate="content">
+                <form [formGroup]="form">
+                    <div class="field mb-3">
+                        <label for="calificacion">Calificación</label>
+                        <p-inputNumber id="calificacion" formControlName="calificacion" [min]="0" [max]="5"></p-inputNumber>
+                        <small class="p-error" *ngIf="submitted && f['calificacion'].errors?.['required']">Calificación requerida.</small>
+                    </div>
+                    <div class="field mb-3">
+                        <label for="comentario">Comentario</label>
+                        <textarea rows="5" cols="30" pInputTextarea id="comentario" formControlName="comentario" required></textarea>
+                        <small class="p-error" *ngIf="submitted && f['comentario'].errors?.['required']">Comentario requerido.</small>
+                    </div>
+                    <div class="field mb-3">
+                        <label for="usuarioId">Usuario ID</label>
+                        <p-inputNumber id="usuarioId" formControlName="usuarioId" [useGrouping]="false"></p-inputNumber>
+                        <small class="p-error" *ngIf="submitted && f['usuarioId'].errors?.['required']">Usuario ID requerido.</small>
+                    </div>
+                    <div class="field mb-3">
+                        <label for="productoId">Producto ID</label>
+                        <p-inputNumber id="productoId" formControlName="productoId" [useGrouping]="false"></p-inputNumber>
+                        <small class="p-error" *ngIf="submitted && f['productoId'].errors?.['required']">Producto ID requerido.</small>
+                    </div>
+                </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                    (click)="saveResena()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteResenaDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="resena">¿Estás seguro de que quieres eliminar la reseña <b>{{resena.id}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deleteResenaDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Sí"
+                    (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

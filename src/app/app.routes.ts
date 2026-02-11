@@ -67,5 +67,17 @@ export const routes: Routes = [
     {
         path: 'roles',
         loadComponent: () => import('./views/Admin/rol/rol.component').then(m => m.RolComponent)
+    },
+    {
+        path: 'misiones',
+        loadComponent: () => import('./views/Admin/mision/mision.component').then(m => m.MisionComponent)
+    },
+    {
+        path: 'resenas',
+        loadComponent: () => import('./views/Admin/resenas/resenas.component').then(m => m.ResenasComponent)
+    },
+    {
+        path: 'pedidos',
+        loadComponent: () => import('./views/Admin/pedidos/pedidos.component').then(m => m.PedidosComponent)
     }
 ];

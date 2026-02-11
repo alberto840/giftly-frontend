@@ -4,4 +4,5 @@ export interface Producto {
     stock: number;
     precio: number;     // BigDecimal
     categoriaId: number;
+    imgUrl: string;
 }

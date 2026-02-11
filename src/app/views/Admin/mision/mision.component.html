@@ -1,1 +1,102 @@
-<p>mision works!</p>
+<div class="p-[60px] flex flex-col justify-center items-center w-full bg-primary">
+    <div class="w-full mb-3 flex items-center gap-1">
+        <div class="text-5xl text-white font-bold">Gestión de Misiones</div>
+        <p-menu #menu [model]="items" [popup]="true" />
+        <p-button (click)="menu.toggle($event)" icon="pi pi-spin pi-cog" [rounded]="true" [outlined]="true"
+            severity="primary" [outlined]="true" />
+    </div>
+    <div class="card">
+        <p-toast></p-toast>
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+        <div class="flex justify-end mb-4">
+            <p-button label="Crear Misión" icon="pi pi-plus" class="p-button-success"
+                (onClick)="openNew()"></p-button>
+        </div>
+
+        <p-table class="w-full" #dt [value]="misiones" [rows]="10" [paginator]="true" [globalFilterFields]="['titulo', 'objetivo']"
+            [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="id"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+            [showCurrentPageReport]="true">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="id" style="min-width:5rem">ID <p-sortIcon field="id"></p-sortIcon></th>
+                    <th pSortableColumn="titulo" style="min-width:15rem">Título <p-sortIcon field="titulo"></p-sortIcon></th>
+                    <th pSortableColumn="objetivo" style="min-width:15rem">Objetivo <p-sortIcon field="objetivo"></p-sortIcon></th>
+                    <th pSortableColumn="premioPunt" style="min-width:10rem">Premio <p-sortIcon field="premioPunt"></p-sortIcon></th>
+                    <th pSortableColumn="fechaFinal" style="min-width:10rem">Fecha Final <p-sortIcon field="fechaFinal"></p-sortIcon></th>
+                    <th>Acciones</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-mision>
+                <tr>
+                    <td>{{mision.id}}</td>
+                    <td>{{mision.titulo}}</td>
+                    <td>{{mision.objetivo}}</td>
+                    <td>{{mision.premioPunt}} pts</td>
+                    <td>{{mision.fechaFinal | date:'dd/MM/yyyy'}}</td>
+                    <td>
+                        <p-button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                            (onClick)="editMision(mision)"></p-button>
+                        <p-button icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                            (onClick)="deleteMision(mision)"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <p-dialog [(visible)]="misionDialog" [style]="{width: '450px'}" header="Detalles de Misión" [modal]="true"
+            styleClass="p-fluid">
+            <ng-template pTemplate="content">
+                <form [formGroup]="form">
+                    <div class="field mb-3">
+                        <label for="titulo">Título</label>
+                        <input type="text" pInputText id="titulo" formControlName="titulo" required autofocus />
+                        <small class="p-error" *ngIf="submitted && f['titulo'].errors?.['required']">El título es requerido.</small>
+                    </div>
+                    <div class="field mb-3">
+                        <label for="objetivo">Objetivo</label>
+                        <input type="text" pInputText id="objetivo" formControlName="objetivo" required />
+                        <small class="p-error" *ngIf="submitted && f['objetivo'].errors?.['required']">El objetivo es requerido.</small>
+                    </div>
+                    <div class="field mb-3">
+                        <label for="descripcion">Descripción</label>
+                        <textarea pInputTextarea id="descripcion" formControlName="descripcion" required rows="3" cols="20"></textarea>
+                        <small class="p-error" *ngIf="submitted && f['descripcion'].errors?.['required']">La descripción es requerida.</small>
+                    </div>
+                    <div class="field mb-3">
+                        <label for="premioPunt">Premio (Puntos)</label>
+                        <p-inputNumber id="premioPunt" formControlName="premioPunt" [showButtons]="true" [min]="0"></p-inputNumber>
+                        <small class="p-error" *ngIf="submitted && f['premioPunt'].errors?.['required']">El premio es requerido.</small>
+                    </div>
+                    <div class="field mb-3">
+                        <label for="fechaFinal">Fecha Final</label>
+                        <p-calendar id="fechaFinal" formControlName="fechaFinal" [showIcon]="true" dateFormat="yy-mm-dd" dataType="string"></p-calendar>
+                        <small class="p-error" *ngIf="submitted && f['fechaFinal'].errors?.['required']">La fecha final es requerida.</small>
+                    </div>
+                </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                    (click)="saveMision()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteMisionDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="mision">¿Estás seguro de que quieres eliminar <b>{{mision.titulo}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deleteMisionDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Sí"
+                    (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

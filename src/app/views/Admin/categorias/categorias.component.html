@@ -1,66 +1,78 @@
-<div class="card">
-    <p-toast></p-toast>
-    <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
-
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-bold">Gestión de Categorías</h2>
-        <p-button label="Crear Categoría" icon="pi pi-plus" class="p-button-success" (onClick)="openNew()"></p-button>
+<div class="p-[60px] flex flex-col justify-center items-center w-full bg-primary">
+    <div class="w-full mb-3 flex items-center gap-1">
+        <div class="text-5xl text-white font-bold">Gestión de Categorías</div>
+        <p-menu #menu [model]="items" [popup]="true" />
+        <p-button (click)="menu.toggle($event)" icon="pi pi-spin pi-cog" [rounded]="true" [outlined]="true"
+            severity="primary" [outlined]="true" />
     </div>
+    <div class="card">
+        <p-toast></p-toast>
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
 
-    <p-table #dt [value]="categorias" [rows]="10" [paginator]="true" [globalFilterFields]="['nombre']"
-        [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="id"
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
-        [showCurrentPageReport]="true">
-        
-        <ng-template pTemplate="header">
-            <tr>
-                <th pSortableColumn="id" style="min-width:5rem">ID <p-sortIcon field="id"></p-sortIcon></th>
-                <th pSortableColumn="nombre" style="min-width:15rem">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
-                <th>Acciones</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-categoria>
-            <tr>
-                <td>{{categoria.id}}</td>
-                <td>{{categoria.nombre}}</td>
-                <td>
-                    <p-button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (onClick)="editCategoria(categoria)"></p-button>
-                    <p-button icon="pi pi-trash" class="p-button-rounded p-button-warning" (onClick)="deleteCategoria(categoria)"></p-button>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="summary">
-            <div class="flex align-items-center justify-content-between">
-                En total hay {{categorias ? categorias.length : 0 }} categorías.
-            </div>
-        </ng-template>
-    </p-table>
-
-    <p-dialog [(visible)]="categoriaDialog" [style]="{width: '450px'}" header="Detalles de Categoría" [modal]="true" styleClass="p-fluid">
-        <ng-template pTemplate="content">
-            <form [formGroup]="form">
-                <div class="field">
-                    <label for="nombre">Nombre</label>
-                    <input type="text" pInputText id="nombre" formControlName="nombre" required autofocus />
-                    <small class="p-error" *ngIf="submitted && f['nombre'].errors?.['required']">El nombre es requerido.</small>
-                </div>
-            </form>
-        </ng-template>
-
-        <ng-template pTemplate="footer">
-            <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
-            <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveCategoria()"></button>
-        </ng-template>
-    </p-dialog>
-
-    <p-dialog [(visible)]="deleteCategoriaDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
-        <div class="flex align-items-center justify-content-center">
-            <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
-            <span *ngIf="categoria">¿Estás seguro de que quieres eliminar <b>{{categoria.nombre}}</b>?</span>
+        <div class="flex justify-end mb-4">
+            <p-button label="Crear Categoría" icon="pi pi-plus" class="p-button-success"
+                (onClick)="openNew()"></p-button>
         </div>
-        <ng-template pTemplate="footer">
-            <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No" (click)="deleteCategoriaDialog = false"></button>
-            <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Sí" (click)="confirmDelete()"></button>
-        </ng-template>
-    </p-dialog>
+
+        <p-table class="w-full" #dt [value]="categorias" [rows]="10" [paginator]="true"
+            [globalFilterFields]="['nombre']" [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="id"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+            [showCurrentPageReport]="true">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="id" style="min-width:5rem">ID <p-sortIcon field="id"></p-sortIcon></th>
+                    <th pSortableColumn="nombre" style="min-width:15rem">Nombre <p-sortIcon field="nombre"></p-sortIcon>
+                    </th>
+                    <th>Acciones</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-categoria>
+                <tr>
+                    <td>{{categoria.id}}</td>
+                    <td>{{categoria.nombre}}</td>
+                    <td>
+                        <p-button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                            (onClick)="editCategoria(categoria)"></p-button>
+                        <p-button icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                            (onClick)="deleteCategoria(categoria)"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <p-dialog [(visible)]="categoriaDialog" [style]="{width: '450px'}" header="Detalles de Categoría" [modal]="true"
+            styleClass="p-fluid">
+            <ng-template pTemplate="content">
+                <form [formGroup]="form">
+                    <div class="field">
+                        <label for="nombre">Nombre</label>
+                        <input type="text" pInputText id="nombre" formControlName="nombre" required autofocus />
+                        <small class="p-error" *ngIf="submitted && f['nombre'].errors?.['required']">El nombre es
+                            requerido.</small>
+                    </div>
+                </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                    (click)="saveCategoria()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteCategoriaDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="categoria">¿Estás seguro de que quieres eliminar <b>{{categoria.nombre}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deleteCategoriaDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Sí"
+                    (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
 </div>

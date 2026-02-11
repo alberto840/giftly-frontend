@@ -1,1 +1,90 @@
-<p>qr works!</p>
+<div class="p-[60px] flex flex-col justify-center items-center w-full bg-primary">
+    <div class="w-full mb-3 flex items-center gap-1">
+        <div class="text-5xl text-white font-bold">Gestión de QRs</div>
+        <p-menu #menu [model]="items" [popup]="true" />
+        <p-button (click)="menu.toggle($event)" icon="pi pi-spin pi-cog" [rounded]="true" [outlined]="true"
+            severity="primary" [outlined]="true" />
+    </div>
+    <div class="card">
+        <p-toast></p-toast>
+        <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+        <div class="flex justify-end mb-4">
+            <p-button label="Crear QR" icon="pi pi-plus" class="p-button-success"
+                (onClick)="openNew()"></p-button>
+        </div>
+
+        <p-table class="w-full" #dt [value]="qrs" [rows]="10" [paginator]="true" [globalFilterFields]="['id']"
+            [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="id"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+            [showCurrentPageReport]="true">
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="id" style="min-width:5rem">ID <p-sortIcon field="id"></p-sortIcon></th>
+                    <th pSortableColumn="fechaCreacion" style="min-width:10rem">Creación <p-sortIcon field="fechaCreacion"></p-sortIcon></th>
+                    <th pSortableColumn="fechaExpiracion" style="min-width:10rem">Expiración <p-sortIcon field="fechaExpiracion"></p-sortIcon></th>
+                    <th pSortableColumn="pedidoId" style="min-width:10rem">Pedido ID <p-sortIcon field="pedidoId"></p-sortIcon></th>
+                    <th>Acciones</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-qr>
+                <tr>
+                    <td>{{qr.id}}</td>
+                    <td>{{qr.fechaCreacion | date:'dd/MM/yyyy'}}</td>
+                    <td>{{qr.fechaExpiracion | date:'dd/MM/yyyy'}}</td>
+                    <td>{{qr.pedidoId}}</td>
+                    <td>
+                        <p-button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
+                            (onClick)="editQr(qr)"></p-button>
+                        <p-button icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                            (onClick)="deleteQr(qr)"></p-button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <p-dialog [(visible)]="qrDialog" [style]="{width: '450px'}" header="Detalles de QR" [modal]="true"
+            styleClass="p-fluid">
+            <ng-template pTemplate="content">
+                <form [formGroup]="form">
+                    <div class="field mb-3">
+                        <label for="fechaCreacion">Fecha Creación</label>
+                        <p-calendar id="fechaCreacion" formControlName="fechaCreacion" [showIcon]="true" dateFormat="yy-mm-dd" dataType="string"></p-calendar>
+                        <small class="p-error" *ngIf="submitted && f['fechaCreacion'].errors?.['required']">Fecha creación requerida.</small>
+                    </div>
+                    <div class="field mb-3">
+                        <label for="fechaExpiracion">Fecha Expiración</label>
+                        <p-calendar id="fechaExpiracion" formControlName="fechaExpiracion" [showIcon]="true" dateFormat="yy-mm-dd" dataType="string"></p-calendar>
+                        <small class="p-error" *ngIf="submitted && f['fechaExpiracion'].errors?.['required']">Fecha expiración requerida.</small>
+                    </div>
+                    <div class="field mb-3">
+                        <label for="pedidoId">Pedido ID</label>
+                        <p-inputNumber id="pedidoId" formControlName="pedidoId" [useGrouping]="false"></p-inputNumber>
+                        <small class="p-error" *ngIf="submitted && f['pedidoId'].errors?.['required']">Pedido ID requerido.</small>
+                    </div>
+                </form>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text"
+                    (click)="hideDialog()"></button>
+                <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text"
+                    (click)="saveQr()"></button>
+            </ng-template>
+        </p-dialog>
+
+        <p-dialog [(visible)]="deleteQrDialog" header="Confirmar" [modal]="true" [style]="{width:'450px'}">
+            <div class="flex align-items-center justify-content-center">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+                <span *ngIf="qr">¿Estás seguro de que quieres eliminar este QR <b>{{qr.id}}</b>?</span>
+            </div>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+                    (click)="deleteQrDialog = false"></button>
+                <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Sí"
+                    (click)="confirmDelete()"></button>
+            </ng-template>
+        </p-dialog>
+    </div>
+</div>

@@ -9,9 +9,11 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { CategoriaService } from '../../../services/categoria/categoria.service';
 import { Categoria } from '../../../models/categoria.modelo';
+import { MenuModule } from 'primeng/menu';
+import { Router, RouterLinkActive } from "@angular/router";
 
 @Component({
   selector: 'app-categorias',
@@ -27,18 +29,20 @@ import { Categoria } from '../../../models/categoria.modelo';
     ConfirmDialogModule,
     InputTextModule,
     ReactiveFormsModule,
-    FormsModule
-  ],
+    FormsModule,
+    MenuModule,
+],
   providers: [MessageService, ConfirmationService],
   templateUrl: './categorias.component.html',
   styleUrl: './categorias.component.css'
 })
 export class CategoriasComponent implements OnInit {
-  
+  items: MenuItem[] | undefined;
+
   categorias: Categoria[] = [];
   categoria: Categoria = {} as Categoria;
   selectedCategorias: Categoria[] = [];
-  
+
   categoriaDialog: boolean = false;
   submitted: boolean = false;
   deleteCategoriaDialog: boolean = false;
@@ -49,7 +53,8 @@ export class CategoriasComponent implements OnInit {
     private categoriaService: CategoriaService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.form = this.fb.group({
       nombre: ['', Validators.required]
@@ -58,6 +63,102 @@ export class CategoriasComponent implements OnInit {
 
   ngOnInit() {
     this.getAll();
+    this.items = [
+      {
+        label: 'Usuarios',
+        items: [
+          {
+            label: 'Usuarios',
+            icon: 'pi pi-user',
+            command: () => {
+              this.goToRoute('/usuarios');
+            }
+          },
+          {
+            label: 'Roles',
+            icon: 'pi pi-user',
+            command: () => {
+              this.goToRoute('/roles');
+            }
+          },
+          {
+            label: 'Referidos',
+            icon: 'pi pi-users',
+            command: () => {
+              this.goToRoute('/referidos');
+            }
+          }
+        ]
+      },
+      {
+        label: 'Regalos',
+        items: [
+          {
+            label: 'Productos',
+            icon: 'pi pi-gift',
+            command: () => {
+              this.goToRoute('/productos');
+            }
+          },
+          {
+            label: 'Pedidos',
+            icon: 'pi pi-shopping-cart',
+            command: () => {
+              this.goToRoute('/pedidos');
+            }
+          },
+          {
+            label: 'Categorias',
+            icon: 'pi pi-tag',
+            command: () => {
+              this.goToRoute('/categorias');
+            }
+          }
+        ]
+      },
+      {
+        label: 'Game',
+        items: [
+          {
+            label: 'Misiones',
+            icon: 'pi pi-list-check',
+            command: () => {
+              this.goToRoute('/misiones');
+            }
+          },
+          {
+            label: 'Premios',
+            icon: 'pi pi-tags',
+            command: () => {
+              this.goToRoute('/tienda-premio');
+            }
+          }
+        ]
+      },
+      {
+        label: 'Giftly',
+        items: [
+          {
+            label: 'Reseñas',
+            icon: 'pi pi-comments',
+            command: () => {
+              this.goToRoute('/resenas');
+            }
+          },
+          {
+            label: 'Qr',
+            icon: 'pi pi-qrcode',
+            command: () => {
+              this.goToRoute('/qr');
+            }
+          }
+        ]
+      }
+    ];
+  }
+
+  goToRoute(route: string) {
+    this.router.navigate([route]);
   }
 
   getAll() {
@@ -115,13 +216,13 @@ export class CategoriasComponent implements OnInit {
 
     if (this.form.valid) {
       const formValue = this.form.value;
-      
+
       if (this.categoria.id) {
         // Update
         this.categoriaService.actualizar(this.categoria.id, { ...this.categoria, ...formValue }).subscribe({
           next: (res) => {
             const index = this.categorias.findIndex(c => c.id === this.categoria.id);
-            if(index !== -1) {
+            if (index !== -1) {
               this.categorias[index] = res;
             }
             this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Categoría Actualizada', life: 3000 });
