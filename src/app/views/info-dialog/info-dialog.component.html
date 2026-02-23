@@ -107,6 +107,6 @@
         }
     </div>
     <div class="flex justify-end">
-        <p-button label="Volver" [text]="true" severity="secondary" />
+        <p-button label="Volver" (click)="ref.close()" [text]="true" severity="secondary" />
     </div>
 </div>

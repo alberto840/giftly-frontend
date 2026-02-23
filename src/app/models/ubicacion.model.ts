@@ -4,4 +4,5 @@ export interface Ubicacion {
     latitud: string;
     direccion: string;
     referencia: string;
+    usuarioId?: number;
 }

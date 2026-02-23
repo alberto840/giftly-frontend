@@ -11,26 +11,104 @@ import { TextareaModule } from 'primeng/textarea';
 import * as L from 'leaflet';
 import { DialogService } from 'primeng/dynamicdialog';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
+import { PedidoRegistroRequest } from '../../models/pedido.model';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-location',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule, FormsModule, TextareaModule, FloatLabelModule, InputTextModule, ButtonModule],
+  imports: [DropdownModule, ReactiveFormsModule, CommonModule, RouterModule, FormsModule, TextareaModule, FloatLabelModule, InputTextModule, ButtonModule],
   providers: [DialogService],
   templateUrl: './location.component.html',
   styleUrl: './location.component.css'
 })
 export class LocationComponent implements OnInit {
-  private dialogService = inject(DialogService);
+  //obtener user id del localStorage
+  public usuarioId: number = JSON.parse(localStorage.getItem('user') || '{}').id;
+
+  public ubicaciones: Ubicacion[] = [];
+
   private map!: L.Map;
   private marker?: L.Marker;
 
   // Variables donde se guardará la ubicación
   public latitud: number | null = null;
   public longitud: number | null = null;
+
+  private router = inject(Router);
+  private dialogService = inject(DialogService);
+  private fb = inject(FormBuilder);
+
+  public pedidoForm = this.fb.group({
+    pedido: this.fb.group({
+      fechaCreacion: [new Date().toISOString().split('T')[0]],
+      total: [0],
+      usuarioId: [null],
+      qrId: [null],
+      tiendaPremioId: [null],
+      status: ['PENDIENTE']
+    }),
+    detallePedido: this.fb.group({
+      mensaje: [''],
+      instrucciones: [''],
+      receptorEncarga: [''],
+      celular1: [''],
+      celular2: [''],
+      nombreObjetivo: [''],
+      nombre_emisor: [''],
+      ubicacionId: [null]
+    }),
+    productos: this.fb.array([])
+  });
+
   ngOnInit() {
     this.initMap();
+    const navigation = this.router.getCurrentNavigation();
+    const data = window.history.state['pedido'] as PedidoRegistroRequest;
+
+    if (data) {
+      this.cargarDatosEnFormulario(data);
+
+      // 1. Llenar ubicaciones si tenemos el usuarioId
+      const usuarioId = data.pedido?.usuarioId;
+      if (usuarioId) {
+        this.obtenerUbicaciones(usuarioId);
+        // También actualizamos el usuarioId en el locationForm
+        this.locationForm.patchValue({ usuarioId });
+      }
+    }
   }
+
+  obtenerUbicaciones(usuarioId: number) {
+    this.ubicacionService.getByUsuarioId(usuarioId).subscribe({
+      next: (res) => {
+        // Ajusta 'res.data' según el nombre de la propiedad en tu ApiResponse
+        this.ubicaciones = res.data;
+        console.log('Ubicaciones cargadas:', this.ubicaciones);
+      },
+      error: (err) => console.error('Error al cargar ubicaciones', err)
+    });
+  }
+
+  cargarDatosEnFormulario(data: PedidoRegistroRequest) {
+    if (data.pedido) {
+      this.pedidoForm.controls.pedido.patchValue(data.pedido as any);
+    }
+    if (data.detallePedido) {
+      this.pedidoForm.controls.detallePedido.patchValue(data.detallePedido as any);
+    }
+
+    if (data.productos && data.productos.length > 0) {
+      data.productos.forEach(prod => {
+        const prodGroup = this.fb.group({
+          productoId: [prod.productoId],
+          cantidad: [prod.cantidad]
+        });
+        (this.pedidoForm.controls.productos as any).push(prodGroup);
+      });
+    }
+  }
+
   private initMap(): void {
     const iconDefault = L.icon({
       iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -64,6 +142,11 @@ export class LocationComponent implements OnInit {
 
     console.log(`Coordenadas guardadas: Lat ${this.latitud}, Lng ${this.longitud}`);
 
+    this.locationForm.patchValue({
+      latitud: lat.toString(),
+      longitud: lng.toString()
+    });
+
     // Si ya existe un pin, lo movemos; si no, lo creamos
     if (this.marker) {
       this.marker.setLatLng([lat, lng]);
@@ -76,41 +159,38 @@ export class LocationComponent implements OnInit {
   errorMessage: string = '';
 
   constructor(
-    private fb: FormBuilder,
     private ubicacionService: UbicacionService,
-    private router: Router
   ) {
     this.locationForm = this.fb.group({
+      id: [null],
+      longitud: ['', Validators.required],
+      latitud: ['', Validators.required],
       direccion: ['', Validators.required],
-      referencia: ['', Validators.required], // Using second location field as reference or similar
-      notas: [''],
-      guardar: [false]
+      referencia: ['referencia', Validators.required],
+      usuarioId: [this.usuarioId ? this.usuarioId : null, Validators.required]
     });
   }
 
   onSubmit() {
-    if (this.locationForm.valid) {
-      const ubicacion: Ubicacion = {
-        id: 0, // Backend handles ID
-        direccion: this.locationForm.value.direccion,
-        latitud: '0', // Placeholder
-        longitud: '0', // Placeholder
-        referencia: this.locationForm.value.referencia
-      };
-
-      this.ubicacionService.crear(ubicacion).subscribe({
-        next: (response) => {
-          console.log('Location created', response);
-          // Navigate or show success
-          alert('Ubicación guardada exitosamente');
-        },
-        error: (err) => {
-          console.error('Location creation error', err);
-          this.errorMessage = 'Error al guardar la ubicación.';
-        }
-      });
+    const dataEnvio = {
+      pedido: this.pedidoForm.value,
+      nuevaUbicacion: this.locationForm.value
+    };
+    //si ubicacionid es diferente a null o 0, entonces se debe guardar la ubicacion
+    if (this.locationForm.value.ubicacionId != null && this.locationForm.value.ubicacionId != 0) {
+      if (this.pedidoForm.valid) {
+        console.log('Enviando datos:', dataEnvio);
+        this.router.navigate(['/more-details'], { state: { data: dataEnvio } });
+      } else {
+        this.errorMessage = 'Debe completar el formulario';
+      }
     } else {
-      this.locationForm.markAllAsTouched();
+      if (this.locationForm.valid) {
+        console.log('Enviando datos:', dataEnvio);
+        this.router.navigate(['/more-details'], { state: { data: dataEnvio } });
+      } else {
+        this.errorMessage = 'Debe completar el formulario';
+      }
     }
   }
 
@@ -127,7 +207,7 @@ export class LocationComponent implements OnInit {
       showHeader: false,
       modal: true,
       data: {
-        type: 'message'
+        type: 'location'
       }
     });
   }

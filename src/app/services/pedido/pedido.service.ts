@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Pedido } from '../../models/pedido.model';
+import { Pedido, PedidoRegistroRequest } from '../../models/pedido.model';
 import { ApiResponse } from '../../models/apiResponse.model';
 
 @Injectable({ providedIn: 'root' })
@@ -20,6 +20,10 @@ export class PedidoService {
     return this.http
       .get<ApiResponse<Pedido[]>>(this.baseUrl, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
+  }
+
+  registrarPedidoCompleto(request: PedidoRegistroRequest): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/registrar-completo`, request);
   }
 
   getById(id: number): Observable<Pedido> {

@@ -9,44 +9,47 @@
         <div class="bg-white rounded-[1rem] p-8 shadow-xl relative z-10">
             <!-- Header -->
             <div class="flex justify-between items-center mb-8">
-                <form [formGroup]="detailsForm" (ngSubmit)="onSubmit()" class="space-y-5 w-full">
-                    <div class="pb-2">
-                        <p-floatlabel color="accent" focus.color="accent">
-                            <input id="receptor_encargado" pInputText formControlName="receptor_encargado"
-                                class="w-full" />
-                            <label for="receptor_encargado">Receptor encargado</label>
-                        </p-floatlabel>
-                        <div *ngIf="detailsForm.get('receptor_encargado')?.invalid && (detailsForm.get('receptor_encargado')?.dirty || detailsForm.get('receptor_encargado')?.touched)"
-                            class="text-red-500 text-xs mt-1 ml-2">
-                            Requerido
-                        </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div>
+                <form [formGroup]="pedidoForm" class="w-full">
+                    <div formGroupName="detallePedido" class="space-y-5 w-full">
+                        <div class="pb-2">
                             <p-floatlabel color="accent" focus.color="accent">
-                                <input id="celular_1" pInputText formControlName="celular_1" class="w-full" />
-                                <label for="celular_1">Celular 1</label>
+                                <input id="receptorEncarga" pInputText formControlName="receptorEncarga"
+                                    class="w-full" />
+                                <label for="receptorEncarga">Receptor encargado</label>
                             </p-floatlabel>
-                            <div *ngIf="detailsForm.get('celular_1')?.invalid && (detailsForm.get('celular_1')?.dirty || detailsForm.get('celular_1')?.touched)"
+                            <div *ngIf="pedidoForm.get('receptorEncarga')?.invalid && (pedidoForm.get('receptorEncarga')?.dirty || pedidoForm.get('receptorEncarga')?.touched)"
                                 class="text-red-500 text-xs mt-1 ml-2">
                                 Requerido
                             </div>
                         </div>
-                        <div>
-                            <p-floatlabel color="accent" focus.color="accent">
-                                <input id="celular_2" pInputText formControlName="celular_2" class="w-full" />
-                                <label for="celular_2">Celular 2</label>
-                            </p-floatlabel>
-                            <div *ngIf="detailsForm.get('celular_2')?.invalid && (detailsForm.get('celular_2')?.dirty || detailsForm.get('celular_2')?.touched)"
-                                class="text-red-500 text-xs mt-1 ml-2">
-                                Requerido
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p-floatlabel color="accent" focus.color="accent">
+                                    <input id="celular1" pInputText formControlName="celular1" class="w-full" />
+                                    <label for="celular1">Celular 1</label>
+                                </p-floatlabel>
+                                <div *ngIf="pedidoForm.get('celular1')?.invalid && (pedidoForm.get('celular1')?.dirty || pedidoForm.get('celular_1')?.touched)"
+                                    class="text-red-500 text-xs mt-1 ml-2">
+                                    Requerido
+                                </div>
+                            </div>
+                            <div>
+                                <p-floatlabel color="accent" focus.color="accent">
+                                    <input id="celular2" pInputText formControlName="celular2" class="w-full" />
+                                    <label for="celular2">Celular 2</label>
+                                </p-floatlabel>
+                                <div *ngIf="pedidoForm.get('celular2')?.invalid && (pedidoForm.get('celular2')?.dirty || pedidoForm.get('celular2')?.touched)"
+                                    class="text-red-500 text-xs mt-1 ml-2">
+                                    Requerido
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Message Area -->
-                    <div>
-                        <label class="block text-gray-700 text-base mb-1">¿Alguna instrucción extra?</label>
-                        <textarea class="w-full" rows="5" cols="30" pTextarea formControlName="detalle"></textarea>
+                        <!-- Message Area -->
+                        <div>
+                            <label class="block text-gray-700 text-base mb-1">¿Alguna instrucción extra?</label>
+                            <textarea id="instrucciones" class="w-full" rows="5" cols="30" pTextarea
+                                formControlName="instrucciones"></textarea>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -67,7 +70,7 @@
            flex items-center justify-center 
            bg-secondary text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:bg-primary 
            focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2" aria-label="Subir a la parte superior"
-    (click)="navigateForward()">
+    (click)="onSubmit()">
 
     <i class="fa-solid fa-circle-arrow-right fa-xl"></i>
 </button>

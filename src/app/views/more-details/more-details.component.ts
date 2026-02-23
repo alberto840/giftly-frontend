@@ -8,6 +8,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { DialogService } from 'primeng/dynamicdialog';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
+import { PedidoRegistroRequest } from '../../models/pedido.model';
 
 @Component({
   selector: 'app-more-details',
@@ -18,30 +19,94 @@ import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
   styleUrl: './more-details.component.css'
 })
 export class MoreDetailsComponent {
-  detailsForm: FormGroup;
-  private dialogService = inject(DialogService);
 
   private router = inject(Router);
+  private dialogService = inject(DialogService);
+  private fb = inject(FormBuilder);
 
-  constructor(
-    private fb: FormBuilder,
-  ) {
-    this.detailsForm = this.fb.group({
-      receptor_encargado: ['', Validators.required],
-      celular_1: ['', Validators.required],
-      celular_2: [''],
-      detalle: ['', Validators.required]
-    });
+  public nuevaUbicacionCargada: any = null;
+
+  public pedidoForm = this.fb.group({
+    pedido: this.fb.group({
+      fechaCreacion: [new Date().toISOString().split('T')[0]],
+      total: [0],
+      usuarioId: [null],
+      qrId: [null],
+      tiendaPremioId: [null],
+      status: ['PENDIENTE']
+    }),
+    detallePedido: this.fb.group({
+      mensaje: [''],
+      instrucciones: [''],
+      receptorEncarga: ['', Validators.required],
+      celular1: ['', [Validators.required, Validators.pattern('^[0-9]+$')]],
+      celular2: [''],
+      nombreObjetivo: [''],
+      nombre_emisor: [''],
+      ubicacionId: [null]
+    }),
+    productos: this.fb.array([])
+  });
+
+  ngOnInit() {
+    const navigation = this.router.getCurrentNavigation();
+    const state = window.history.state['data'];
+
+    if (state) {
+      // 1. Cargamos el formulario principal (Pedido)
+      if (state.pedido) {
+        this.cargarDatosEnFormulario(state.pedido);
+      }
+
+      // 2. Guardamos la nueva ubicación en nuestra variable local
+      if (state.nuevaUbicacion) {
+        this.nuevaUbicacionCargada = state.nuevaUbicacion;
+        console.log('Nueva ubicación recibida:', this.nuevaUbicacionCargada);
+      }
+    }
+  }
+
+  cargarDatosEnFormulario(data: any) {
+    // Limpiamos el FormArray antes de insertar para evitar duplicados
+    const productosArray = this.pedidoForm.get('productos') as any;
+    while (productosArray.length !== 0) {
+      productosArray.removeAt(0);
+    }
+
+    // Seteamos los valores de los grupos
+    if (data.pedido) {
+      this.pedidoForm.get('pedido')?.patchValue(data.pedido);
+    }
+    if (data.detallePedido) {
+      this.pedidoForm.get('detallePedido')?.patchValue(data.detallePedido);
+    }
+
+    // Cargamos los productos al array dinámico
+    if (data.productos && data.productos.length > 0) {
+      data.productos.forEach((prod: any) => {
+        productosArray.push(this.fb.group({
+          productoId: [prod.productoId],
+          cantidad: [prod.cantidad]
+        }));
+      });
+    }
+  }
+
+  constructor() {
   }
 
   onSubmit() {
-    if (this.detailsForm.valid) {
-      console.log('Detalle de entrega:', this.detailsForm.value.detalle);
-      // Navigate to payment or next step
-      // this.router.navigate(['/payment']);
-      alert('Detalle guardado. Ir a pago (simulado).');
+    if (this.pedidoForm.valid) {
+      const dataFinal = {
+        pedido: this.pedidoForm.value,
+        nuevaUbicacion: this.nuevaUbicacionCargada
+      };
+
+      console.log('Datos finales listos para pago:', dataFinal);
+      this.router.navigate(['/payment-check'], { state: { data: dataFinal } });
     } else {
-      this.detailsForm.markAllAsTouched();
+      console.log(this.pedidoForm.value);
+      this.pedidoForm.markAllAsTouched();
     }
   }
 

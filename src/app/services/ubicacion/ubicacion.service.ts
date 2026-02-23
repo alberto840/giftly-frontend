@@ -22,6 +22,12 @@ export class UbicacionService {
       .pipe(map(r => r.data));
   }
 
+  getByUsuarioId(usuarioId: number): Observable<ApiResponse<Ubicacion[]>> {
+    return this.http.get<ApiResponse<Ubicacion[]>>(
+      `${this.baseUrl}/usuario/${usuarioId}`, { headers: this.authHeaders() }
+    );
+  }
+
   getById(id: number): Observable<Ubicacion> {
     return this.http
       .get<ApiResponse<Ubicacion>>(`${this.baseUrl}/${id}`, { headers: this.authHeaders() })

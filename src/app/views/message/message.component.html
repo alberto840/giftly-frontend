@@ -7,27 +7,28 @@
     <div class="relative w-full max-w-2xl">
         <!-- Main Card -->
         <div class="bg-white rounded-[1rem] p-8 shadow-xl relative z-10">
+            <form [formGroup]="pedidoForm">
+                <div formGroupName="detallePedido" class="flex justify-between items-center mb-8">
+                    <p-floatlabel color="primary">
+                        <input id="nombre_emisor" pInputText formControlName="nombre_emisor" />
+                        <label for="nombre_emisor">¿Cuál es tu nombre?</label>
+                    </p-floatlabel>
 
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-8">
-                <p-floatlabel color="primary" focus.color="primary">
-                    <input id="username" pInputText [(ngModel)]="value" />
-                    <label for="username">¿Cual es tu nombre?</label>
-                </p-floatlabel>
-                <p-floatlabel>
-                    <input id="username" pInputText [(ngModel)]="value" />
-                    <label for="username">¿Para quien es el regalo?</label>
-                </p-floatlabel>
-            </div>
+                    <p-floatlabel>
+                        <input id="nombre_receptor" pInputText formControlName="receptorEncarga" />
+                        <label for="nombre_receptor">¿Para quién es el regalo?</label>
+                    </p-floatlabel>
+                </div>
 
-            <!-- Message Area -->
-            <div class="mb-1">
-                <label class="block text-gray-700 text-base">Mensaje para esa persona especial:</label>
-            </div>
+                <div class="mb-1">
+                    <label class="block text-gray-700 text-base">Mensaje para esa persona especial:</label>
+                </div>
 
-            <!-- Input Box -->
-            <textarea class="w-full" rows="5" cols="30" pTextarea [(ngModel)]="value"></textarea>
-
+                <div formGroupName="detallePedido">
+                    <textarea id="mensaje" class="w-full" rows="5" cols="30" pTextarea
+                        formControlName="mensaje"></textarea>
+                </div>
+            </form>
         </div>
 
         <!-- Bottom Elements -->
@@ -45,7 +46,7 @@
            flex items-center justify-center 
            bg-secondary text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:bg-primary 
            focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2" aria-label="Subir a la parte superior"
-    (click)="navigateForward()">
+    (click)="onSubmit()">
 
     <i class="fa-solid fa-circle-arrow-right fa-xl"></i>
 </button>

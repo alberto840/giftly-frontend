@@ -3,7 +3,7 @@
     <div class="w-full flex justify-center">
         <img src=".//public/logo.png" alt="Logo" class="w-[150px]">
     </div>
-    <div class="flex w-full">
+    <div class="items-center w-[65%]">
         <p-timeline [value]="events" align="alternate" styleClass="customized-timeline">
             <ng-template pTemplate="marker" let-event>
                 <span class="flex w-8 h-8 items-center justify-center text-white rounded-full z-10 shadow-sm"
@@ -17,34 +17,31 @@
                         [toggleable]="true" [collapsed]="(event.status === 'Inicio')? false : true">
                         <div class="w-full">
                             <p>
-                                {{ event.description }}
+                                {{ event.nombre }}
                             </p>
                             @if (event.status !== 'Inicio') {
-                            <p-carousel [value]="products" [numVisible]="1" [numScroll]="1" [circular]="false">
+                            <p-carousel [value]="event.type === 1 ? souvenirs : event.type === 4 ? flores : event.type === 2 ? comestibles : bebidas" [numVisible]="1" [numScroll]="1" [circular]="false">
                                 <ng-template let-product #item>
-                                    <div class="border border-surface rounded-border m-2 p-4">
+                                    <div class="border border-surface rounded-border p-3">
                                         <div class="mb-4">
-                                            <div class="relative mx-auto">
-                                                <img src="https://primefaces.org/cdn/primeng/images/demo/product/{{ product.image }}"
-                                                    [alt]="product.name" class="w-full rounded-border" />
-                                                <p-tag [value]=" '$' + product.price "
-                                                    [severity]="getSeverity(product.inventoryStatus)" class="absolute"
+                                            <div class="flex justify-center relative">
+                                                <img src=".//public/products/{{ product.imgUrl }}"
+                                                    [alt]="product.nombre" class="align-self-center rounded-border h-[100px]" />
+                                                <p-tag [value]=" '$' + product.precio"
+                                                    [severity]="'success'" class="absolute"
                                                     styleClass="dark:!bg-surface-900"
-                                                    [ngStyle]="{ 'left.px': 5, 'top.px': 5 }" />
+                                                    [ngStyle]="{ 'left.px': 0, 'top.px': 0 }" />
                                             </div>
                                         </div>
                                         <div class="mb-4 font-medium">
-                                            {{ product.name }}
+                                            {{ product.nombre }}
                                         </div>
                                         <div class="flex justify-between items-center">
                                             <p-fluid class="card flex flex-wrap gap-4">
-                                                <div class="flex-auto">
-                                                    <label class="mb-2 block font-bold" for="stacked">
-                                                        Cantidad
-                                                    </label>
-                                                    <p-inputnumber [(ngModel)]="value1" [showButtons]="true"
-                                                        inputId="stacked" mode="decimal" />
-                                                </div>
+                                                <p-inputnumber [ngModel]="getProductQuantity(product.id)"
+                                                    (onInput)="onQuantityChange(product, $event.value)"
+                                                    [showButtons]="true" [min]="0" inputId="stacked"
+                                                    mode="decimal" />
                                             </p-fluid>
                                         </div>
                                     </div>
@@ -55,7 +52,6 @@
                         @if (event.status === 'Inicio') {
                         <p-button label="¿Como Funciona?" [text]="true" />
                         } @else {
-                        <p-button label="Leer más" [text]="true" />
                         }
                     </p-panel>
                 </p-card>
@@ -66,7 +62,7 @@
 <button class="fixed bottom-6 right-6 w-[40px] h-[40px] flex items-center justify-center
     bg-secondary text-white rounded-full shadow-lg transition-all duration-300 ease-in-out hover:bg-primary
     focus:outline-none focus:ring-1 focus:ring-white focus:ring-offset-2" aria-label="Subir a la parte superior"
-    (click)="navigateToMessage()">
+    (click)="onSubmit()">
 
     <i class="fa-solid fa-circle-arrow-right fa-xl"></i>
 </button>
