@@ -16,6 +16,10 @@ import { PedidoService } from '../../../services/pedido/pedido.service';
 import { Pedido } from '../../../models/pedido.model';
 import { MenuModule } from 'primeng/menu';
 import { Router, RouterLinkActive } from "@angular/router";
+import { UbicacionService } from '../../../services/ubicacion/ubicacion.service';
+import { ProductoService } from '../../../services/producto/producto.service';
+import { forkJoin } from 'rxjs';
+import L from 'leaflet';
 
 @Component({
   selector: 'app-pedidos',
@@ -42,18 +46,32 @@ import { Router, RouterLinkActive } from "@angular/router";
 })
 export class PedidosComponent implements OnInit {
   items: MenuItem[] | undefined;
-  
+
+  private map!: L.Map;
+  private marker?: L.Marker;
+
   pedidos: Pedido[] = [];
   pedido: Pedido = {} as Pedido;
-  
+
   pedidoDialog: boolean = false;
   submitted: boolean = false;
   deletePedidoDialog: boolean = false;
 
   form: FormGroup;
 
+  detalleSeleccionado: any = null;
+  productosSeleccionados: any[] = [];
+  detalleDialog: boolean = false;
+  productosDialog: boolean = false;
+
+  ubicacionDetalle: any = null; // Para guardar la info de la ubicación
+  cargandoDetalle: boolean = false;
+  cargandoProductos: boolean = false;
+
   constructor(
     private pedidoService: PedidoService,
+    private productoService: ProductoService,
+    private ubicacionService: UbicacionService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private fb: FormBuilder,
@@ -65,7 +83,8 @@ export class PedidosComponent implements OnInit {
       total: [0, [Validators.required, Validators.min(0)]],
       qrId: [null, Validators.required],
       usuarioId: [null, Validators.required],
-      tiendaPremioId: [null, Validators.required]
+      tiendaPremioId: [null, Validators.required],
+      status: ['', Validators.required]
     });
   }
 
@@ -172,13 +191,100 @@ export class PedidosComponent implements OnInit {
     ];
   }
 
+  verDetalle(pedidoCompleto: any) {
+    this.detalleSeleccionado = pedidoCompleto.detallePedido;
+    this.ubicacionDetalle = null;
+    this.detalleDialog = true;
+
+    if (this.detalleSeleccionado?.ubicacionId) {
+      this.cargandoDetalle = true;
+      this.ubicacionService.getById(this.detalleSeleccionado.ubicacionId).subscribe({
+        next: (data) => {
+          this.ubicacionDetalle = data;
+          this.cargandoDetalle = false;
+          // Esperamos un pequeño timeout para que el DOM del p-dialog se renderice
+          setTimeout(() => {
+            this.initDetailMap(data.latitud, data.longitud);
+          }, 200);
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar la ubicación' });
+          this.cargandoDetalle = false;
+        }
+      });
+    }
+  }
+
+  verProductos(pedidoCompleto: any) {
+    this.productosSeleccionados = [];
+    this.productosDialog = true;
+    this.cargandoProductos = true;
+
+    if (pedidoCompleto.productos && pedidoCompleto.productos.length > 0) {
+      // Creamos un array de observables para traer la info de cada producto
+      const requests = pedidoCompleto.productos.map((p: any) =>
+        this.productoService.getById(p.productoId)
+      );
+
+      forkJoin(requests).subscribe({
+        next: (responses: any) => {
+          // Combinamos la info del detalle (cantidad) con la info del producto (nombre, precio, etc)
+          this.productosSeleccionados = responses.map((prodInfo: any, index: number) => ({
+            ...prodInfo,
+            cantidad: pedidoCompleto.productos[index].cantidad
+          }));
+          this.cargandoProductos = false;
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar productos' });
+          this.cargandoProductos = false;
+        }
+      });
+    } else {
+      this.cargandoProductos = false;
+    }
+  }
+
+  private initDetailMap(lat: string | number, lng: string | number): void {
+    const latitude = Number(lat);
+    const longitude = Number(lng);
+
+    // Si el mapa ya existe, lo eliminamos para reiniciarlo
+    if (this.map) {
+      this.map.remove();
+    }
+
+    // Configuración de iconos (necesario en Angular/Leaflet)
+    const iconDefault = L.icon({
+      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41]
+    });
+
+    this.map = L.map('map-detail').setView([latitude, longitude], 16);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    this.marker = L.marker([latitude, longitude], { icon: iconDefault }).addTo(this.map);
+
+    // Muy importante: Leaflet necesita invalidar el tamaño si el contenedor cambió
+    setTimeout(() => {
+      this.map.invalidateSize();
+    }, 100);
+  }
+
   goToRoute(route: string) {
     this.router.navigate([route]);
   }
 
   getAll() {
-    this.pedidoService.getAll().subscribe({
+    this.pedidoService.getPedidosCompletos().subscribe({
       next: (data) => {
+        console.log(data);
         this.pedidos = data;
       },
       error: (e) => {
@@ -197,12 +303,13 @@ export class PedidosComponent implements OnInit {
   editPedido(pedido: Pedido) {
     this.pedido = { ...pedido };
     this.form.patchValue({
-        fechaCreacion: this.pedido.fechaCreacion,
-        fechaEnvio: this.pedido.fechaEnvio,
-        total: this.pedido.total,
-        qrId: this.pedido.qrId,
-        usuarioId: this.pedido.usuarioId,
-        tiendaPremioId: this.pedido.tiendaPremioId
+      fechaCreacion: this.pedido.fechaCreacion,
+      fechaEnvio: this.pedido.fechaEnvio,
+      total: this.pedido.total,
+      qrId: this.pedido.qrId,
+      usuarioId: this.pedido.usuarioId,
+      tiendaPremioId: this.pedido.tiendaPremioId,
+      status: this.pedido.status
     });
     this.pedidoDialog = true;
   }
@@ -238,29 +345,29 @@ export class PedidosComponent implements OnInit {
 
     if (this.form.valid) {
       const formValue = this.form.value;
-      
+
       let fechaCreacionStr = formValue.fechaCreacion;
       if (formValue.fechaCreacion instanceof Date) {
-          fechaCreacionStr = formValue.fechaCreacion.toISOString().split('T')[0];
+        fechaCreacionStr = formValue.fechaCreacion.toISOString().split('T')[0];
       }
       let fechaEnvioStr = formValue.fechaEnvio;
       if (formValue.fechaEnvio instanceof Date) {
-          fechaEnvioStr = formValue.fechaEnvio.toISOString().split('T')[0];
+        fechaEnvioStr = formValue.fechaEnvio.toISOString().split('T')[0];
       }
 
       const pedidoToSave: Pedido = {
-          ...this.pedido,
-          ...formValue,
-          fechaCreacion: fechaCreacionStr,
-          fechaEnvio: fechaEnvioStr
+        ...this.pedido,
+        ...formValue,
+        fechaCreacion: fechaCreacionStr,
+        fechaEnvio: fechaEnvioStr
       };
-      
+
       if (this.pedido.id) {
         // Update
         this.pedidoService.actualizar(this.pedido.id, pedidoToSave).subscribe({
           next: (res) => {
             const index = this.pedidos.findIndex(c => c.id === this.pedido.id);
-            if(index !== -1) {
+            if (index !== -1) {
               this.pedidos[index] = res;
             }
             this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Pedido Actualizado', life: 3000 });

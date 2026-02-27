@@ -1,0 +1,62 @@
+<div>
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <i class="pi pi-spin pi-spinner" style="font-size: 1.5rem; color: #a855f7;"></i>
+    <p>Cargando productos...</p>
+  </div>
+
+  <!-- Empty -->
+  <div *ngIf="!loading && items.length === 0" class="empty-state">
+    <i class="pi pi-inbox" style="font-size: 2rem;"></i>
+    <p>No hay productos en el pedido.</p>
+  </div>
+
+  <!-- Product list -->
+  <div *ngIf="!loading && items.length > 0">
+    <div class="productos-list">
+      <div class="producto-item" *ngFor="let item of items; let i = index">
+        <!-- Info -->
+        <div class="producto-info">
+          <div class="producto-nombre">{{ item.producto?.nombre ?? 'Producto #' + item.productoId }}</div>
+          <div class="producto-precio">
+            Bs. {{ item.producto?.precio ?? 0 | number:'1.0-0' }} × {{ item.cantidad }}
+            = <strong>Bs. {{ (item.producto?.precio ?? 0) * item.cantidad | number:'1.0-0' }}</strong>
+          </div>
+        </div>
+
+        <!-- Quantity controls -->
+        <div class="cantidad-controls">
+          <p-button
+            icon="pi pi-minus"
+            [rounded]="true"
+            severity="danger"
+            size="small"
+            (click)="decrementar(i)"
+            [outlined]="true"
+          />
+          <span class="cantidad-display">{{ item.cantidad }}</span>
+          <p-button
+            icon="pi pi-plus"
+            [rounded]="true"
+            severity="success"
+            size="small"
+            (click)="incrementar(i)"
+            [outlined]="true"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Total -->
+    <div class="total-row">
+      <span>Total</span>
+      <span>${{ total | number:'1.0-0' }}</span>
+    </div>
+
+    <!-- Footer buttons -->
+    <div class="dialog-footer">
+      <p-button label="Cancelar" severity="secondary" [outlined]="true" (click)="cerrar()" />
+      <p-button label="Confirmar" severity="success" icon="pi pi-check" (click)="confirmar()" />
+    </div>
+  </div>
+</div>

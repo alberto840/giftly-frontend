@@ -104,8 +104,36 @@ export class GameComponent implements OnInit {
       this.removeProducto(index);
     }
 
+    this.calcularTotal();
     // Sincronizamos el estado del formulario global
     this.pedidoForm.updateValueAndValidity();
+  }
+
+  calcularTotal() {
+    const productosSeleccionados = this.productosFormArray.value;
+    let nuevoTotal = 0;
+
+    // Unimos todas las listas para buscar el precio fácilmente
+    const todosLosProductos = [
+      ...this.souvenirs,
+      ...this.flores,
+      ...this.comestibles,
+      ...this.bebidas
+    ];
+
+    productosSeleccionados.forEach((pSeleccionado: any) => {
+      const productoInfo = todosLosProductos.find(p => p.id === pSeleccionado.productoId);
+      if (productoInfo && productoInfo.precio) {
+        nuevoTotal += productoInfo.precio * pSeleccionado.cantidad;
+      }
+    });
+
+    // Actualizamos el valor en el FormGroup del pedido
+    this.pedidoForm.patchValue({
+      pedido: {
+        total: nuevoTotal
+      }
+    });
   }
 
   actualizarTotal() {
@@ -138,6 +166,9 @@ export class GameComponent implements OnInit {
         this.flores = response.filter((producto: Producto) => producto.categoriaId === 4);
         this.comestibles = response.filter((producto: Producto) => producto.categoriaId === 2);
         this.bebidas = response.filter((producto: Producto) => producto.categoriaId === 3);
+        this.productosFormArray.valueChanges.subscribe(() => {
+          this.calcularTotal();
+        });
       },
       error: (err) => {
         console.error('Error al obtener productos', err);

@@ -26,6 +26,17 @@ export class PedidoService {
     return this.http.post<any>(`${this.baseUrl}/registrar-completo`, request);
   }
 
+  getPedidosCompletos(id?: number): Observable<any[]> {
+    //if id exist add to the header
+    let headers = this.authHeaders();
+    if (id) {
+      headers = headers.append('id', id.toString());
+    }
+    return this.http
+      .get<ApiResponse<any[]>>(`${this.baseUrl}/pedidos-completos`, { headers: headers })
+      .pipe(map(r => r.data));
+  }
+
   getById(id: number): Observable<Pedido> {
     return this.http
       .get<ApiResponse<Pedido>>(`${this.baseUrl}/${id}`, { headers: this.authHeaders() })

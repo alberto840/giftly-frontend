@@ -70,11 +70,14 @@ export class LocationComponent implements OnInit {
       this.cargarDatosEnFormulario(data);
 
       // 1. Llenar ubicaciones si tenemos el usuarioId
-      const usuarioId = data.pedido?.usuarioId;
-      if (usuarioId) {
-        this.obtenerUbicaciones(usuarioId);
-        // También actualizamos el usuarioId en el locationForm
-        this.locationForm.patchValue({ usuarioId });
+      const usuarioId = this.usuarioId;
+      if (this.usuarioId && this.usuarioId !== 1) {
+        this.obtenerUbicaciones(this.usuarioId);
+        // Actualizamos el usuarioId en el locationForm para cuando cree una nueva
+        this.locationForm.patchValue({ usuarioId: this.usuarioId });
+      } else {
+        // Si es invitado, nos aseguramos de que las ubicaciones estén vacías
+        this.ubicaciones = [];
       }
     }
   }
@@ -165,32 +168,32 @@ export class LocationComponent implements OnInit {
       id: [null],
       longitud: ['', Validators.required],
       latitud: ['', Validators.required],
-      direccion: ['', Validators.required],
+      detalle: ['', Validators.required],
       referencia: ['referencia', Validators.required],
       usuarioId: [this.usuarioId ? this.usuarioId : null, Validators.required]
     });
   }
 
   onSubmit() {
+    const ubicacionSeleccionadaId = this.pedidoForm.get('detallePedido.ubicacionId')?.value;
     const dataEnvio = {
       pedido: this.pedidoForm.value,
       nuevaUbicacion: this.locationForm.value
     };
     //si ubicacionid es diferente a null o 0, entonces se debe guardar la ubicacion
-    if (this.locationForm.value.ubicacionId != null && this.locationForm.value.ubicacionId != 0) {
-      if (this.pedidoForm.valid) {
-        console.log('Enviando datos:', dataEnvio);
-        this.router.navigate(['/more-details'], { state: { data: dataEnvio } });
-      } else {
-        this.errorMessage = 'Debe completar el formulario';
-      }
-    } else {
-      if (this.locationForm.valid) {
-        console.log('Enviando datos:', dataEnvio);
-        this.router.navigate(['/more-details'], { state: { data: dataEnvio } });
-      } else {
-        this.errorMessage = 'Debe completar el formulario';
-      }
+    // 1. Si seleccionó una ubicación existente del Dropdown
+    if (ubicacionSeleccionadaId) {
+      console.log('Usando ubicación guardada:', ubicacionSeleccionadaId);
+      this.router.navigate(['/more-details'], { state: { data: dataEnvio } });
+    }
+    // 2. Si no hay selección previa, debe validar el formulario de "Nueva Ubicación"
+    else if (this.locationForm.valid) {
+      console.log('Usando nueva ubicación del mapa');
+      this.router.navigate(['/more-details'], { state: { data: dataEnvio } });
+    }
+    else {
+      this.errorMessage = 'Selecciona una ubicación guardada o marca una nueva en el mapa';
+      this.locationForm.markAllAsTouched();
     }
   }
 

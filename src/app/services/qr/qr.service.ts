@@ -22,6 +22,12 @@ export class QrService {
       .pipe(map(r => r.data));
   }
 
+  getLastQr(): Observable<Qr> {
+    return this.http
+      .get<ApiResponse<Qr>>(`${this.baseUrl}/ultimo`, { headers: this.authHeaders() })
+      .pipe(map(r => r.data));
+  }
+
   getById(id: number): Observable<Qr> {
     return this.http
       .get<ApiResponse<Qr>>(`${this.baseUrl}/${id}`, { headers: this.authHeaders() })

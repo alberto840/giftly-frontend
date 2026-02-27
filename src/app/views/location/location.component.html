@@ -8,23 +8,25 @@
         <!-- Main Card -->
         <div class="bg-white rounded-[1rem] p-5 shadow-xlrelative z-10">
             <!-- Dropdown para ubicaciones guardadas -->
-            <form [formGroup]="pedidoForm">
-                <div formGroupName="detallePedido">
-                    <p-dropdown class="w-full" [options]="ubicaciones" formControlName="ubicacionId"
-                        optionLabel="direccion" optionValue="id" placeholder="Selecciona una ubicacion guardada" />
-                </div>
-            </form>
-            <div class="text-center my-5 text-secondary">ó ingresa una nueva</div>
+            @if(usuarioId != 1){                
+                <form [formGroup]="pedidoForm">
+                    <div formGroupName="detallePedido">
+                        <p-dropdown class="w-full" [options]="ubicaciones" formControlName="ubicacionId"
+                            optionLabel="direccion" optionValue="id" placeholder="Selecciona una ubicacion guardada" />
+                    </div>
+                </form>
+                <div class="text-center my-5 text-secondary">ó ingresa una nueva</div>
+            }            
             <!-- Form -->
             <form [formGroup]="locationForm" (ngSubmit)="onSubmit()" class="space-y-2">
 
                 <!-- Ubicación 1 -->
                 <div>
                     <p-floatlabel color="primary" focus.color="primary">
-                        <input id="direccion" pInputText formControlName="direccion" class="w-full" />
-                        <label for="direccion">Detalle (Ej. Calle 123, Barrio, referencia)</label>
+                        <input id="detalle" pInputText formControlName="detalle" class="w-full" />
+                        <label for="detalle">Detalle (Ej. Calle 123, Barrio, referencia)</label>
                     </p-floatlabel>
-                    <div *ngIf="locationForm.get('direccion')?.invalid && (locationForm.get('direccion')?.dirty || locationForm.get('direccion')?.touched)"
+                    <div *ngIf="locationForm.get('detalle')?.invalid && (locationForm.get('detalle')?.dirty || locationForm.get('detalle')?.touched)"
                         class="text-red-500 text-xs ml-2">
                         Requerido
                     </div>

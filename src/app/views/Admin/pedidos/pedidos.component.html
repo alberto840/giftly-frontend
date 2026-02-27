@@ -26,16 +26,28 @@
                     <th pSortableColumn="fechaEnvio" style="min-width:10rem">Envío <p-sortIcon field="fechaEnvio"></p-sortIcon></th>
                     <th pSortableColumn="total" style="min-width:10rem">Total <p-sortIcon field="total"></p-sortIcon></th>
                     <th pSortableColumn="usuarioId" style="min-width:8rem">Usuario ID <p-sortIcon field="usuarioId"></p-sortIcon></th>
+                    <th pSortableColumn="status" style="min-width:8rem">Status <p-sortIcon field="status"></p-sortIcon></th>
+                    <th style="min-width:5rem">Detalle</th>
+                    <th style="min-width:5rem">Productos</th>
                     <th>Acciones</th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-pedido>
                 <tr>
-                    <td>{{pedido.id}}</td>
-                    <td>{{pedido.fechaCreacion | date:'dd/MM/yyyy'}}</td>
-                    <td>{{pedido.fechaEnvio | date:'dd/MM/yyyy'}}</td>
-                    <td>{{pedido.total | currency}}</td>
-                    <td>{{pedido.usuarioId}}</td>
+                    <td>{{pedido.pedido.id}}</td>
+                    <td>{{pedido.pedido.fechaCreacion | date:'dd/MM/yyyy'}}</td>
+                    <td>{{pedido.pedido.fechaEnvio | date:'dd/MM/yyyy'}}</td>
+                    <td>{{pedido.pedido.total | currency}}</td>
+                    <td>{{pedido.pedido.usuarioId}}</td>
+                    <td>{{pedido.pedido.status}}</td>
+                    <td>
+                        <p-button icon="pi pi-info-circle" [rounded]="true" severity="info" 
+                                (onClick)="verDetalle(pedido)"></p-button>
+                    </td>
+                    <td>
+                        <p-button icon="pi pi-box" [rounded]="true" severity="help" 
+                                (onClick)="verProductos(pedido)"></p-button>
+                    </td>
                     <td>
                         <p-button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                             (onClick)="editPedido(pedido)"></p-button>
@@ -80,6 +92,11 @@
                         <p-inputNumber id="tiendaPremioId" formControlName="tiendaPremioId" [useGrouping]="false"></p-inputNumber>
                         <small class="p-error" *ngIf="submitted && f['tiendaPremioId'].errors?.['required']">Tienda Premio ID requerido.</small>
                     </div>
+                    <div class="field mb-3">
+                        <label for="status">Status</label>
+                        <input id="status" type="text" pInputText formControlName="status" />
+                        <small class="p-error" *ngIf="submitted && f['status'].errors?.['required']">Status requerido.</small>
+                    </div>
                 </form>
             </ng-template>
 
@@ -105,3 +122,61 @@
         </p-dialog>
     </div>
 </div>
+
+<p-dialog [(visible)]="detalleDialog" [style]="{width: '500px'}" header="Detalles de Entrega" [modal]="true">
+    <div *ngIf="cargandoDetalle" class="flex justify-center p-4">
+        <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+    </div>
+
+    <div class="grid" *ngIf="detalleSeleccionado && !cargandoDetalle">
+        <div class="col-12 border-bottom-1 surface-border mb-3">
+            <h3 class="m-0 text-primary">Información del Receptor</h3>
+        </div>
+        <div class="col-12 mb-2"><strong>Receptor:</strong> {{detalleSeleccionado.receptorEncarga}}</div>
+        <div class="col-12 mb-2"><strong>Para:</strong> {{detalleSeleccionado.nombreObjetivo}}</div>
+        <div class="col-6 mb-2"><strong>Celular 1:</strong> {{detalleSeleccionado.celular1}}</div>
+        <div class="col-6 mb-2"><strong>Celular 2:</strong> {{detalleSeleccionado.celular2}}</div>
+        
+        <div class="col-12 mt-3 border-bottom-1 surface-border mb-3" *ngIf="ubicacionDetalle">
+            <h3 class="m-0 text-primary">Ubicación Seleccionada</h3>
+        </div>
+        <div class="col-12" *ngIf="ubicacionDetalle">
+            <p><strong>Detalle:</strong> {{ubicacionDetalle.detalle}}</p>
+        </div>
+        <div class="col-12 mt-2">
+            <div id="map-detail" style="height: 300px; width: 100%; border-radius: 12px; border: 1px solid #ddd; z-index: 1;"></div>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog [(visible)]="productosDialog" [style]="{width: '700px'}" header="Lista de Productos" [modal]="true">
+    <p-table [value]="productosSeleccionados" [loading]="cargandoProductos" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Imagen</th>
+                <th>Producto</th>
+                <th>Precio Unit.</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-prod>
+            <tr>
+                <td>
+                    <img [src]="'.//public/products/' + prod.imagenUrl" [alt]="prod.nombre" width="50" class="shadow-2" />
+                </td>
+                <td>{{prod.nombre}}</td>
+                <td>{{prod.precio | currency}}</td>
+                <td>
+                    <span class="p-badge p-badge-info">{{prod.cantidad}}</span>
+                </td>
+                <td><strong>{{(prod.precio * prod.cantidad) | currency}}</strong></td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="5" class="text-center p-4">No hay productos registrados.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>

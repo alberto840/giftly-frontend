@@ -3,4 +3,5 @@ export interface Qr {
   fechaCreacion: string;   // java.sql.Date
   fechaExpiracion: string; // java.sql.Date
   pedidoId: number;
+  imageUrl: string;
 }

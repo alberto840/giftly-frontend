@@ -27,7 +27,7 @@
                                             <div class="flex justify-center relative">
                                                 <img src=".//public/products/{{ product.imgUrl }}"
                                                     [alt]="product.nombre" class="align-self-center rounded-border h-[100px]" />
-                                                <p-tag [value]=" '$' + product.precio"
+                                                <p-tag [value]=" 'Bs. ' + product.precio"
                                                     [severity]="'success'" class="absolute"
                                                     styleClass="dark:!bg-surface-900"
                                                     [ngStyle]="{ 'left.px': 0, 'top.px': 0 }" />
