@@ -79,5 +79,9 @@ export const routes: Routes = [
     {
         path: 'pedidos',
         loadComponent: () => import('./views/Admin/pedidos/pedidos.component').then(m => m.PedidosComponent)
+    },
+    {
+        path: 'niveles',
+        loadComponent: () => import('./views/Admin/niveles/niveles.component').then(m => m.NivelesComponent)
     }
 ];

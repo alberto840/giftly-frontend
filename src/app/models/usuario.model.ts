@@ -4,6 +4,7 @@ export interface UsuarioModel {
   email: string;
   fechaNacimien: string; // java.sql.Date
   puntos?: number;
+  exp?: number;
   rolId?: number;
 }
 

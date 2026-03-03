@@ -145,6 +145,13 @@ export class ProductoComponent implements OnInit {
             command: () => {
               this.goToRoute('/tienda');
             }
+          },
+          {
+            label: 'Niveles',
+            icon: 'pi pi-star',
+            command: () => {
+              this.goToRoute('/niveles');
+            }
           }
         ]
       },

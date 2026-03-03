@@ -132,6 +132,13 @@ export class CategoriasComponent implements OnInit {
             command: () => {
               this.goToRoute('/tienda-premio');
             }
+          },
+          {
+            label: 'Niveles',
+            icon: 'pi pi-star',
+            command: () => {
+              this.goToRoute('/niveles');
+            }
           }
         ]
       },

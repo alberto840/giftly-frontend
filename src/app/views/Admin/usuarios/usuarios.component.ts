@@ -150,6 +150,13 @@ export class UsuariosComponent implements OnInit {
             command: () => {
               this.goToRoute('/tienda');
             }
+          },
+          {
+            label: 'Niveles',
+            icon: 'pi pi-star',
+            command: () => {
+              this.goToRoute('/niveles');
+            }
           }
         ]
       },
