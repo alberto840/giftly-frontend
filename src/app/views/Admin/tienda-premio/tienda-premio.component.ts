@@ -60,6 +60,7 @@ export class TiendaPremioComponent implements OnInit {
   ) {
     this.form = this.fb.group({
       precioPunto: [0, [Validators.required, Validators.min(0)]],
+      precioExp: [0, [Validators.required, Validators.min(0)]],
       productoId: [null, Validators.required]
     });
   }
@@ -200,6 +201,7 @@ export class TiendaPremioComponent implements OnInit {
     this.tiendaPremio = { ...tiendaPremio };
     this.form.patchValue({
         precioPunto: this.tiendaPremio.precioPunto,
+        precioExp: this.tiendaPremio.precioExp,
         productoId: this.tiendaPremio.productoId
     });
     this.tiendaPremioDialog = true;

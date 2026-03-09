@@ -45,4 +45,17 @@ export class UserService {
       .delete<ApiResponse<void>>(`${this.baseUrl}/eliminar/${id}`, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
   }
+
+  modificarExpYPuntos(id: number, deltaExp: number, deltaPuntos: number): Observable<UsuarioModel> {
+    const body: any = { deltaExp, deltaPuntos };
+    return this.http
+      .put<ApiResponse<UsuarioModel>>(`${this.baseUrl}/modificar-puntos-exp/${id}`, body, { headers: this.authHeaders() })
+      .pipe(map(r => r.data));
+  }
+
+  obtenerPuntosDeUsuario(id: number): Observable<number> {
+    return this.http
+      .get<ApiResponse<number>>(`${this.baseUrl}/puntos/${id}`, { headers: this.authHeaders() })
+      .pipe(map(r => r.data));
+  }
 }

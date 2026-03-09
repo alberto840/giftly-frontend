@@ -18,9 +18,20 @@
         <!-- Info -->
         <div class="producto-info">
           <div class="producto-nombre">{{ item.producto?.nombre ?? 'Producto #' + item.productoId }}</div>
-          <div class="producto-precio">
-            Bs. {{ item.producto?.precio ?? 0 | number:'1.0-0' }} × {{ item.cantidad }}
-            = <strong>Bs. {{ (item.producto?.precio ?? 0) * item.cantidad | number:'1.0-0' }}</strong>
+          <div class="producto-precio" [ngClass]="item.producto?.categoriaId === 5 ? 'text-primary' : ''">
+            @if(item.producto?.categoriaId === 5){
+              Pts.
+            } @else{
+              Bs.
+            }
+             {{ item.producto?.precio ?? 0 | number:'1.0-0' }} × {{ item.cantidad }}
+            = <strong>
+              @if(item.producto?.categoriaId === 5){
+                Pts.
+              } @else{
+                Bs.
+              }
+              {{ (item.producto?.precio ?? 0) * item.cantidad | number:'1.0-0' }}</strong>
           </div>
         </div>
 
@@ -50,7 +61,7 @@
     <!-- Total -->
     <div class="total-row">
       <span>Total</span>
-      <span>${{ total | number:'1.0-0' }}</span>
+      <span>Bs. {{ total | number:'1.0-0' }}</span>
     </div>
 
     <!-- Footer buttons -->

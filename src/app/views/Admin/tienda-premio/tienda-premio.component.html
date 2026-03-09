@@ -23,6 +23,7 @@
                 <tr>
                     <th pSortableColumn="id" style="min-width:5rem">ID <p-sortIcon field="id"></p-sortIcon></th>
                     <th pSortableColumn="precioPunto" style="min-width:10rem">Precio Puntos <p-sortIcon field="precioPunto"></p-sortIcon></th>
+                    <th pSortableColumn="precioExp" style="min-width:10rem">Precio Exp <p-sortIcon field="precioExp"></p-sortIcon></th>
                     <th pSortableColumn="productoId" style="min-width:10rem">Producto ID <p-sortIcon field="productoId"></p-sortIcon></th>
                     <th>Acciones</th>
                 </tr>
@@ -31,6 +32,7 @@
                 <tr>
                     <td>{{tiendaPremio.id}}</td>
                     <td>{{tiendaPremio.precioPunto}}</td>
+                    <td>{{tiendaPremio.precioExp}}</td>
                     <td>{{tiendaPremio.productoId}}</td>
                     <td>
                         <p-button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
@@ -50,6 +52,11 @@
                         <label for="precioPunto">Precio Puntos</label>
                         <p-inputNumber id="precioPunto" formControlName="precioPunto" [min]="0"></p-inputNumber>
                         <small class="p-error" *ngIf="submitted && f['precioPunto'].errors?.['required']">Precio requerido.</small>
+                    </div>
+                    <div class="field mb-3">
+                        <label for="precioExp">Precio Exp</label>
+                        <p-inputNumber id="precioExp" formControlName="precioExp" [min]="0"></p-inputNumber>
+                        <small class="p-error" *ngIf="submitted && f['precioExp'].errors?.['required']">Precio Exp requerido.</small>
                     </div>
                     <div class="field mb-3">
                         <label for="productoId">Producto ID</label>

@@ -31,18 +31,30 @@ interface EventItem {
   styleUrl: './game.component.css'
 })
 export class GameComponent implements OnInit {
+  public usuarioId: number = JSON.parse(localStorage.getItem('user') || '{}').id;
   private fb = inject(FormBuilder);
   private router = inject(Router);
   events: EventItem[];
   value1: number = 20;
   constructor(private productoService: ProductoService) {
-    this.events = [
-      { status: 'Inicio', date: '15/10/2020 10:30', icon: 'fa-solid fa-circle-play', color: '#9C27B0', description: 'En esta plataforma puedes adquirir regalos para tus seres queridos y ademas ganar recompensas por tus compras! Que esperas para darle una sorpresa a esa persona especial?' },
-      { status: 'Souvenir', date: '16/10/2020 10:00', icon: 'fa-solid fa-gift', color: '#3ab7a6ff', description: 'Necesitas un souvenir? Tenemos lo indicado para esa persona', type: 1 },
-      { status: 'Flores', date: '15/10/2020 14:00', icon: 'fa-solid fa-fan', color: '#673AB7', description: 'Tenemos una variedad de flores para ti', type: 4 },
-      { status: 'Comestibles', date: '15/10/2020 14:00', icon: 'fa-solid fa-utensils', color: '#FF9800', description: 'Tenemos una variedad de comestibles para ti', type: 2 },
-      { status: 'Bebidas', date: '15/10/2020 16:15', icon: 'fa-solid fa-wine-glass', color: '#b73e3aff', description: 'Tenemos una variedad de bebidas para ti', type: 3 },
-    ];
+    if  (this.usuarioId) {
+      this.events = [
+        { status: 'Inicio', date: '15/10/2020 10:30', icon: 'fa-solid fa-circle-play', color: '#9C27B0', description: 'En esta plataforma puedes adquirir regalos para tus seres queridos y ademas ganar recompensas por tus compras! Que esperas para darle una sorpresa a esa persona especial?' },
+        { status: 'Souvenir', date: '16/10/2020 10:00', icon: 'fa-solid fa-gift', color: '#3ab7a6ff', description: 'Necesitas un souvenir? Tenemos lo indicado para esa persona', type: 1 },
+        { status: 'Flores', date: '15/10/2020 14:00', icon: 'fa-solid fa-fan', color: '#673AB7', description: 'Tenemos una variedad de flores para ti', type: 4 },
+        { status: 'Comestibles', date: '15/10/2020 14:00', icon: 'fa-solid fa-utensils', color: '#FF9800', description: 'Tenemos una variedad de comestibles para ti', type: 2 },
+        { status: 'Bebidas', date: '15/10/2020 16:15', icon: 'fa-solid fa-wine-glass', color: '#b73e3aff', description: 'Tenemos una variedad de bebidas para ti', type: 3 },
+        { status: 'Premios', date: '15/10/2020 16:15', icon: 'fa-solid fa-trophy', color: '#eee34cff', description: 'Tenemos una variedad de premios para ti', type: 5 },
+      ];
+    } else {
+      this.events = [
+        { status: 'Inicio', date: '15/10/2020 10:30', icon: 'fa-solid fa-circle-play', color: '#9C27B0', description: 'En esta plataforma puedes adquirir regalos para tus seres queridos y ademas ganar recompensas por tus compras! Que esperas para darle una sorpresa a esa persona especial?' },
+        { status: 'Souvenir', date: '16/10/2020 10:00', icon: 'fa-solid fa-gift', color: '#3ab7a6ff', description: 'Necesitas un souvenir? Tenemos lo indicado para esa persona', type: 1 },
+        { status: 'Flores', date: '15/10/2020 14:00', icon: 'fa-solid fa-fan', color: '#673AB7', description: 'Tenemos una variedad de flores para ti', type: 4 },
+        { status: 'Comestibles', date: '15/10/2020 14:00', icon: 'fa-solid fa-utensils', color: '#FF9800', description: 'Tenemos una variedad de comestibles para ti', type: 2 },
+        { status: 'Bebidas', date: '15/10/2020 16:15', icon: 'fa-solid fa-wine-glass', color: '#b73e3aff', description: 'Tenemos una variedad de bebidas para ti', type: 3 },
+      ];
+    }
   }
 
   public pedidoForm = this.fb.group({
@@ -118,12 +130,13 @@ export class GameComponent implements OnInit {
       ...this.souvenirs,
       ...this.flores,
       ...this.comestibles,
-      ...this.bebidas
+      ...this.bebidas,
+      ...this.premios
     ];
 
     productosSeleccionados.forEach((pSeleccionado: any) => {
       const productoInfo = todosLosProductos.find(p => p.id === pSeleccionado.productoId);
-      if (productoInfo && productoInfo.precio) {
+      if (productoInfo && productoInfo.precio && productoInfo.categoriaId !== 5) {
         nuevoTotal += productoInfo.precio * pSeleccionado.cantidad;
       }
     });
@@ -157,6 +170,7 @@ export class GameComponent implements OnInit {
   flores: Producto[] = [];
   comestibles: Producto[] = [];
   bebidas: Producto[] = [];
+  premios: Producto[] = [];
 
   ngOnInit() {
     this.productoService.getAll().subscribe({
@@ -166,6 +180,7 @@ export class GameComponent implements OnInit {
         this.flores = response.filter((producto: Producto) => producto.categoriaId === 4);
         this.comestibles = response.filter((producto: Producto) => producto.categoriaId === 2);
         this.bebidas = response.filter((producto: Producto) => producto.categoriaId === 3);
+        this.premios = response.filter((producto: Producto) => producto.categoriaId === 5);
         this.productosFormArray.valueChanges.subscribe(() => {
           this.calcularTotal();
         });
@@ -185,6 +200,15 @@ export class GameComponent implements OnInit {
       console.log('Formulario inválido');
       this.pedidoForm.markAllAsTouched();
     }
+  }
+
+  logout() {
+    localStorage.removeItem('user');
+    this.router.navigate(['/login']);
+  }
+
+  navigateToProfile() {
+    this.router.navigate(['/profile-user']);
   }
 
   navigateToMessage() {

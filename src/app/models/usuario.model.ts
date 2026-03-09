@@ -23,3 +23,8 @@ export interface ResponseDto<T> {
   message: string;
   data: T;
 }
+
+export interface ModificarExpPuntosDto {
+  deltaExp: number;
+  deltaPuntos: number;
+}

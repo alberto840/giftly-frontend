@@ -57,7 +57,8 @@ export class ProductosDialogComponent implements OnInit {
 
   get total(): number {
     return this.items.reduce((sum, item) => {
-      return sum + (item.producto?.precio ?? 0) * item.cantidad;
+      const precio = (item.producto?.categoriaId !== 5) ? (item.producto?.precio ?? 0) : 0;
+      return sum + precio * item.cantidad;
     }, 0);
   }
 

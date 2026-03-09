@@ -1,0 +1,44 @@
+/* Ajustes mínimos – el resto lo maneja Tailwind/PrimeNG */
+
+.nivel-card {
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.nivel-card:hover {
+    box-shadow: 0 4px 20px rgba(147, 51, 234, 0.12);
+}
+
+.progress-fill {
+    transition: width 0.7s ease;
+}
+
+.reward-chip {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.reward-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(147, 51, 234, 0.2);
+}
+
+/* Ajuste para que el dialog tenga bordes redondeados */
+:host ::ng-deep .premio-dialog .p-dialog {
+    border-radius: 1.2rem;
+    overflow: hidden;
+}
+
+:host ::ng-deep .premio-dialog .p-dialog-header {
+    padding: 1.25rem 1.5rem 0.75rem;
+    background: white;
+}
+
+:host ::ng-deep .premio-dialog .p-dialog-content {
+    padding: 0 1.5rem;
+    background: white;
+}
+
+:host ::ng-deep .premio-dialog .p-dialog-footer {
+    padding: 0.75rem 1.5rem 1.25rem;
+    background: white;
+    border-top: 1px solid #f3e8ff;
+}

@@ -7,7 +7,7 @@ import { ApiResponse } from '../../models/apiResponse.model';
 
 @Injectable({ providedIn: 'root' })
 export class TiendaPremioService {
-  private baseUrl = environment.apiUrl + 'api/v1/tiendaPremio';
+  private baseUrl = environment.apiUrl + 'api/v1/tienda-premio';
 
   constructor(private http: HttpClient) { }
 
