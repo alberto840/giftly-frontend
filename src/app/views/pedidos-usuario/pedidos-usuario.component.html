@@ -1,0 +1,128 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="max-w-4xl mx-auto pb-20">
+    <div class="flex items-center mb-6 gap-4">
+      <button (click)="goBack()" class="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow hover:bg-gray-100 transition-colors">
+        <i class="fa-solid fa-arrow-left text-purple-600"></i>
+      </button>
+      <h1 class="text-2xl font-bold text-gray-800">Mis Pedidos</h1>
+    </div>
+
+    <div *ngIf="loading" class="flex justify-center items-center py-20">
+      <i class="pi pi-spin pi-spinner text-4xl text-purple-600"></i>
+    </div>
+
+    <div *ngIf="!loading && pedidos.length === 0" class="text-center py-20 bg-white rounded-2xl shadow-sm">
+      <i class="fa-solid fa-box-open text-6xl text-gray-300 mb-4"></i>
+      <p class="text-gray-500 text-lg">No tienes pedidos aún.</p>
+    </div>
+
+    <div *ngIf="!loading && pedidos.length > 0" class="space-y-6">
+      <div *ngFor="let item of pedidos" class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+        <!-- Cabecera del pedido -->
+        <div class="bg-purple-50 p-4 border-b border-purple-100 flex justify-between items-center flex-wrap gap-4">
+          <div>
+            <span class="text-sm text-gray-500 block">Pedido #{{item.pedido?.id}}</span>
+            <span class="font-medium text-gray-800">{{item.pedido?.fechaCreacion | date:'mediumDate'}}</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="px-3 py-1 rounded-full text-sm font-medium" 
+                  [ngClass]="{
+                    'bg-yellow-100 text-yellow-800': item.pedido?.status === 'PENDIENTE',
+                    'bg-green-100 text-green-800': item.pedido?.status === 'COMPLETADO',
+                    'bg-blue-100 text-blue-800': item.pedido?.status === 'EN_PROCESO',
+                    'bg-gray-100 text-gray-800': item.pedido?.status !== 'PENDIENTE' && item.pedido?.status !== 'COMPLETADO' && item.pedido?.status !== 'EN_PROCESO'
+                  }">
+              {{item.pedido?.status}}
+            </span>
+            <span class="text-lg font-bold text-purple-700">{{item.pedido?.total | currency:'Bs.'}}</span>
+          </div>
+        </div>
+
+        <!-- Detalle de productos -->
+        <div class="p-4" *ngIf="item.productos && item.productos.length > 0">
+          <div class="flex justify-between items-center mb-3">
+            <h4 class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Productos</h4>
+            <button (click)="toggleDetails(item.pedido.id)" 
+                    class="text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors flex items-center gap-1">
+              {{expandedOrderId === item.pedido.id ? 'Ocultar Detalles' : 'Ver Detalles'}}
+              <i class="fa-solid" [ngClass]="expandedOrderId === item.pedido.id ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </button>
+          </div>
+
+          <div class="grid gap-3">
+            <div *ngFor="let prod of item.productos" 
+                 class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 border border-gray-100 p-3 rounded-xl hover:bg-gray-100 transition-colors gap-3">
+              <div class="flex items-center gap-4">
+                <div class="relative flex-shrink-0">
+                  <img *ngIf="productosMap.get(prod.productoId)?.imgUrl" 
+                       [src]="'.//public/products/'+productosMap.get(prod.productoId)?.imgUrl" 
+                       [alt]="productosMap.get(prod.productoId)?.nombre" 
+                       class="w-14 h-14 object-cover rounded-lg shadow-sm">
+                  <div *ngIf="!productosMap.get(prod.productoId)?.imgUrl" 
+                       class="w-14 h-14 bg-purple-100 flex items-center justify-center rounded-lg text-purple-400">
+                    <i class="fa-solid fa-box"></i>
+                  </div>
+                  <div class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs font-bold shadow-md border-2 border-white">
+                    {{prod.cantidad}}
+                  </div>
+                </div>
+                <div>
+                  <h5 class="font-semibold text-gray-800 text-sm leading-tight">{{productosMap.get(prod.productoId)?.nombre || 'Cargando producto...'}}</h5>
+                  <span class="text-xs text-gray-500 block mt-1">ID: {{prod.productoId}}</span>
+                </div>
+              </div>
+              <div class="text-right w-full sm:w-auto border-t sm:border-t-0 pt-2 sm:pt-0">
+                <span class="font-bold text-gray-800 block text-sm">{{(productosMap.get(prod.productoId)?.precio || 0) * prod.cantidad | currency:'Bs.'}}</span>
+                <span class="text-xs text-gray-500 font-medium">{{productosMap.get(prod.productoId)?.precio | currency:'Bs.'}} c/u</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sección de Detalles Extendida -->
+        <div *ngIf="expandedOrderId === item.pedido.id" class="border-t border-gray-100 bg-white p-4 space-y-4 animate-fade-in">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Información del Receptor y Mensaje -->
+            <div class="space-y-4">
+              <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <h5 class="text-xs font-bold text-purple-600 uppercase mb-2">Información de Entrega</h5>
+                <div class="space-y-2 text-sm">
+                  <p *ngIf="item.detallePedido?.receptorEncarga"><span class="font-medium text-gray-500">Receptor:</span> {{item.detallePedido.receptorEncarga}}</p>
+                  <p *ngIf="item.detallePedido?.nombreObjetivo"><span class="font-medium text-gray-500">Para:</span> {{item.detallePedido.nombreObjetivo}}</p>
+                  <p *ngIf="item.detallePedido?.celular1"><span class="font-medium text-gray-500">Celular 1:</span> {{item.detallePedido.celular1}}</p>
+                  <p *ngIf="item.detallePedido?.celular2"><span class="font-medium text-gray-500">Celular 2:</span> {{item.detallePedido.celular2}}</p>
+                </div>
+              </div>
+
+              <div class="bg-purple-50 p-3 rounded-lg border border-purple-100" *ngIf="item.detallePedido?.mensaje || item.detallePedido?.instrucciones">
+                <h5 class="text-xs font-bold text-purple-600 uppercase mb-2">Notas</h5>
+                <p class="text-sm text-gray-700 italic" *ngIf="item.detallePedido?.mensaje">
+                   "{{item.detallePedido.mensaje}}"
+                </p>
+                <div class="mt-2 text-xs text-gray-600" *ngIf="item.detallePedido?.instrucciones">
+                  <span class="font-bold">Instrucciones:</span> {{item.detallePedido.instrucciones}}
+                </div>
+              </div>
+            </div>
+
+            <!-- Mapa de Ubicación -->
+            <div class="space-y-2">
+              <h5 class="text-xs font-bold text-gray-500 uppercase">Ubicación de Entrega</h5>
+              <div class="relative w-full h-48 rounded-xl border border-gray-200 overflow-hidden shadow-inner" [id]="'map-' + item.pedido.id" style="z-index: 10;">
+                <!-- El mapa de Leaflet se cargará aquí -->
+                <div *ngIf="!item.detallePedido?.ubicacionId" class="flex flex-col items-center justify-center h-full text-gray-400">
+                  <i class="fa-solid fa-map-location-dot text-2xl mb-2"></i>
+                  <p class="text-xs text-center">Sin ubicación física registrada</p>
+                </div>
+              </div>
+              <p class="text-xs text-gray-500 italic" *ngIf="ubicacionesMap.get(item.detallePedido?.ubicacionId)">
+                <i class="fa-solid fa-location-dot mr-1 text-purple-500"></i>
+                {{ubicacionesMap.get(item.detallePedido.ubicacionId)?.direccion}}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

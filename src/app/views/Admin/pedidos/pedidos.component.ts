@@ -15,6 +15,7 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { PedidoService } from '../../../services/pedido/pedido.service';
 import { Pedido } from '../../../models/pedido.model';
 import { MenuModule } from 'primeng/menu';
+import { DropdownModule } from 'primeng/dropdown';
 import { Router, RouterLinkActive } from "@angular/router";
 import { UbicacionService } from '../../../services/ubicacion/ubicacion.service';
 import { ProductoService } from '../../../services/producto/producto.service';
@@ -39,6 +40,7 @@ import L from 'leaflet';
     ReactiveFormsModule,
     FormsModule,
     MenuModule,
+    DropdownModule,
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './pedidos.component.html',
@@ -67,6 +69,11 @@ export class PedidosComponent implements OnInit {
   ubicacionDetalle: any = null; // Para guardar la info de la ubicación
   cargandoDetalle: boolean = false;
   cargandoProductos: boolean = false;
+
+  statusDialog: boolean = false;
+  estados: string[] = ['PENDIENTE', 'ACEPTADO', 'PREPARANDO', 'ENVIANDO', 'ENTREGADO', 'CANCELADO', 'RECHAZADO'];
+  estadoSeleccionado: string = '';
+  pedidoCompletoSeleccionado: any = null;
 
   constructor(
     private pedidoService: PedidoService,
@@ -405,4 +412,26 @@ export class PedidosComponent implements OnInit {
   }
 
   get f() { return this.form.controls; }
+
+  abrirCambioEstado(pedidoFull: any) {
+    this.pedidoCompletoSeleccionado = pedidoFull;
+    this.pedido = { ...pedidoFull.pedido };
+    this.estadoSeleccionado = this.pedido.status || '';
+    this.statusDialog = true;
+  }
+
+  confirmarCambioEstado() {
+    if (this.pedido.id && this.estadoSeleccionado) {
+      this.pedidoService.cambiarEstado(this.pedido.id, this.estadoSeleccionado).subscribe({
+        next: (res) => {
+          this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Estado Actualizado', life: 3000 });
+          this.statusDialog = false;
+          this.getAll(); // Recargamos para ver los cambios
+        },
+        error: (err) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cambiar el estado' });
+        }
+      });
+    }
+  }
 }

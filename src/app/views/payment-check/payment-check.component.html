@@ -87,6 +87,28 @@
     </div>
 </div>
 
+<!-- Pantalla de Carga / Confirmación -->
+<div *ngIf="isSubmitting || showConfirmation" class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center backdrop-blur-sm">
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center m-4">
+        <!-- Loading specific view -->
+        <ng-container *ngIf="isSubmitting && !showConfirmation">
+            <i class="pi pi-spin pi-spinner text-4xl text-purple-600 mb-4 inline-block"></i>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Procesando pago...</h3>
+            <p class="text-gray-600">Por favor espera un momento.</p>
+        </ng-container>
+
+        <!-- Confirmation specific view -->
+        <ng-container *ngIf="showConfirmation">
+            <div class="mb-4 text-green-500">
+                <i class="fa-solid fa-circle-check text-5xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">¡Pago en revisión!</h3>
+            <p class="text-gray-600 mb-6">Se verificará tu pago y se te confirmará la orden por tu número de celular, revisa "mis pedidos".</p>
+            <p-button *ngIf="usuarioId" label="Ir a mis pedidos" severity="primary" class="w-full block" styleClass="w-full" (click)="goToMisPedidos()"></p-button>
+        </ng-container>
+    </div>
+</div>
+
 <button class="fixed bottom-6 right-6
            w-[40px] h-[40px] 
            flex items-center justify-center 

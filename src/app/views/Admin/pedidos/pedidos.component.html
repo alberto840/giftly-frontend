@@ -49,6 +49,8 @@
                                 (onClick)="verProductos(pedido)"></p-button>
                     </td>
                     <td>
+                        <p-button icon="pi pi-sync" class="p-button-rounded p-button-secondary mr-2"
+                            (onClick)="abrirCambioEstado(pedido)" pTooltip="Cambiar Estado"></p-button>
                         <p-button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                             (onClick)="editPedido(pedido)"></p-button>
                         <p-button icon="pi pi-trash" class="p-button-rounded p-button-warning"
@@ -120,6 +122,19 @@
                     (click)="confirmDelete()"></button>
             </ng-template>
         </p-dialog>
+
+        <p-dialog [(visible)]="statusDialog" [style]="{width: '450px'}" header="Cambiar Estado de Pedido" [modal]="true" styleClass="p-fluid">
+            <ng-template pTemplate="content">
+                <div class="field">
+                    <label for="statusDrop">Seleccionar Nuevo Estado</label>
+                    <p-dropdown appendTo="body" [options]="estados" [(ngModel)]="estadoSeleccionado" placeholder="Seleccione un estado" id="statusDrop"></p-dropdown>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="statusDialog = false"></button>
+                <button pButton pRipple label="Confirmar" icon="pi pi-check" class="p-button-text" (click)="confirmarCambioEstado()"></button>
+            </ng-template>
+        </p-dialog>
     </div>
 </div>
 
@@ -163,14 +178,14 @@
         <ng-template pTemplate="body" let-prod>
             <tr>
                 <td>
-                    <img [src]="'.//public/products/' + prod.imagenUrl" [alt]="prod.nombre" width="50" class="shadow-2" />
+                    <img [src]="'.//public/products/' + prod.imgUrl" [alt]="prod.nombre" width="50" class="shadow-2" />
                 </td>
                 <td>{{prod.nombre}}</td>
                 <td>{{prod.precio | currency}}</td>
                 <td>
                     <span class="p-badge p-badge-info">{{prod.cantidad}}</span>
                 </td>
-                <td><strong>{{(prod.precio * prod.cantidad) | currency}}</strong></td>
+                <td><strong>{{(prod.precio * prod.cantidad) | currency:'Bs.'}}</strong></td>
             </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">

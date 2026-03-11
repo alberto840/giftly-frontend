@@ -87,5 +87,9 @@ export const routes: Routes = [
     {
         path: 'profile-user',
         loadComponent: () => import('./views/profile-user/profile-user.component').then(m => m.ProfileUserComponent)
+    },
+    {
+        path: 'pedidos-usuario',
+        loadComponent: () => import('./views/pedidos-usuario/pedidos-usuario.component').then(m => m.PedidosUsuarioComponent)
     }
 ];

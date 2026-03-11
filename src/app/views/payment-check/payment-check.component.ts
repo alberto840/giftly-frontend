@@ -18,6 +18,9 @@ import { Ubicacion } from '../../models/ubicacion.model';
 import { PedidoService } from '../../services/pedido/pedido.service';
 import { FileUploadModule } from 'primeng/fileupload';
 import { NotificationService } from '../../services/notification/notification.service';
+import { ProductoService } from '../../services/producto/producto.service';
+import { UserService } from '../../services/user/user.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-payment-check',
@@ -39,8 +42,12 @@ export class PaymentCheckComponent {
   private ubicacionService = inject(UbicacionService);
   private pedidoService = inject(PedidoService);
   private notificacionService = inject(NotificationService);
+  private productoService = inject(ProductoService);
+  private userService = inject(UserService);
 
   public qr: Qr | null = null;
+  public isSubmitting = false;
+  public showConfirmation = false;
 
   public pedidoForm = this.fb.group({
     pedido: this.fb.group({
@@ -118,6 +125,7 @@ export class PaymentCheckComponent {
 
   enviarPedidoFinal() {
     if (this.pedidoForm.valid) {
+      this.isSubmitting = true;
       const dataFinal = this.pedidoForm.value;
       console.log('Datos finales listos para el backend:', dataFinal);
       this.pedidoService.registrarPedidoCompleto(dataFinal as any).subscribe({
@@ -127,10 +135,12 @@ export class PaymentCheckComponent {
         },
         error: (err) => {
           console.error('Error al crear el pedido:', err);
+          this.isSubmitting = false;
         }
       });
     } else {
       this.pedidoForm.markAllAsTouched();
+      this.isSubmitting = false;
     }
   }
 
@@ -170,6 +180,7 @@ export class PaymentCheckComponent {
   }
 
   onSubmit() {
+    this.isSubmitting = true;
     const detalleGroup = this.pedidoForm.get('detallePedido');
     const ubicacionId = detalleGroup?.get('ubicacionId')?.value;
     console.log('Ubicación ID:', ubicacionId);
@@ -189,10 +200,14 @@ export class PaymentCheckComponent {
               this.enviarPedidoFinal();
             }
           },
-          error: (err) => console.error('Error al guardar ubicación', err)
+          error: (err) => {
+            console.error('Error al guardar ubicación', err);
+            this.isSubmitting = false;
+          }
         });
       } else {
         alert('No hay una ubicación seleccionada');
+        this.isSubmitting = false;
       }
     } else {
       console.log('Enviando pedido');
@@ -216,11 +231,68 @@ export class PaymentCheckComponent {
     this.notificacionService.enviarNotificacionTelegram(pedidoId, this.uploadedFile).subscribe({
       next: (res: any) => {
         console.log('Notificación enviada exitosamente:', res);
+        this.actualizarExpYPuntos();
       },
       error: (err) => {
         console.error('Error al enviar la notificación:', err);
       }
     });
+  }
+
+  actualizarExpYPuntos() {
+    const productosData = this.productosArray.controls.map(ctrl => ({
+      productoId: ctrl.get('productoId')?.value,
+      cantidad: ctrl.get('cantidad')?.value
+    }));
+
+    if (productosData.length === 0) {
+      this.isSubmitting = false;
+      this.showConfirmation = true;
+      return;
+    }
+
+    const observables = productosData.map(p => this.productoService.getById(p.productoId));
+
+    forkJoin(observables).subscribe({
+      next: (productos) => {
+        let deltaExp = 0;
+        let deltaPuntos = 0;
+
+        productos.forEach((producto, index) => {
+          const cantidad = productosData[index].cantidad;
+          const precioEntero = Math.floor(producto.precio);
+
+          if (producto.categoriaId === 5) {
+            deltaPuntos -= (precioEntero * cantidad);
+          } else {
+            deltaExp += (precioEntero * cantidad);
+            deltaPuntos += (precioEntero * cantidad);
+          }
+        });
+
+        this.userService.modificarExpYPuntos(this.usuarioId, deltaExp, deltaPuntos).subscribe({
+          next: () => {
+            console.log('Exp y puntos actualizados correctamente');
+            this.isSubmitting = false;
+            this.showConfirmation = true;
+          },
+          error: (err) => {
+            console.error('Error al actualizar exp y puntos', err);
+            this.isSubmitting = false;
+            this.showConfirmation = true;
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error al obtener productos para calcular exp/puntos', err);
+        this.isSubmitting = false;
+        this.showConfirmation = true;
+      }
+    });
+  }
+
+  goToMisPedidos() {
+    this.router.navigate(['/pedidos-usuario']);
   }
 
   navigateForward() {

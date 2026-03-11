@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../enviroments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Pedido, PedidoRegistroRequest } from '../../models/pedido.model';
 import { ApiResponse } from '../../models/apiResponse.model';
+import { ResponseDto } from '../../models/usuario.model';
 
 @Injectable({ providedIn: 'root' })
 export class PedidoService {
@@ -59,5 +60,18 @@ export class PedidoService {
     return this.http
       .delete<ApiResponse<void>>(`${this.baseUrl}/eliminar/${id}`, { headers: this.authHeaders() })
       .pipe(map(r => r.data));
+  }
+
+  /**
+ * Cambia el estado de una orden.
+ * @param id El ID del pedido.
+ * @param tipo El nuevo estado (ej. "ENTREGADO", "CANCELADO").
+ */
+  cambiarEstado(id: number, tipo: string): Observable<ResponseDto<Pedido>> {
+    const params = new HttpParams().set('tipo', tipo);
+    return this.http.put<ResponseDto<Pedido>>(`${this.baseUrl}/cambiar-estado/${id}`, {}, { 
+      headers: this.authHeaders(),
+      params: params
+    });
   }
 }
