@@ -37,7 +37,7 @@
                     <td>{{producto.stock}}</td>
                     <td>{{producto.precio | currency}}</td>
                     <td>{{producto.categoriaId}}</td>
-                    <td><img [src]="'.//public/products/' + producto.imgUrl" [alt]="producto.nombre" width="50" class="shadow-4" /></td>
+                    <td><img [src]="'products/' + producto.imgUrl" [alt]="producto.nombre" width="50" class="shadow-4" /></td>
                     <td>
                         <p-button icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2"
                             (onClick)="editProducto(producto)"></p-button>

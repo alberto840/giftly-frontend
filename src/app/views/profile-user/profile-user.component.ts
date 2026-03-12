@@ -190,4 +190,8 @@ export class ProfileUserComponent implements OnInit {
   navigateBack(): void {
     this.router.navigate(['/']);
   }
+
+  navigateToOrders(): void {
+    this.router.navigate(['/pedidos-usuario']);
+  }
 }

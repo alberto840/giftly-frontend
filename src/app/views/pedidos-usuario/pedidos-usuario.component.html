@@ -55,7 +55,7 @@
               <div class="flex items-center gap-4">
                 <div class="relative flex-shrink-0">
                   <img *ngIf="productosMap.get(prod.productoId)?.imgUrl" 
-                       [src]="'.//public/products/'+productosMap.get(prod.productoId)?.imgUrl" 
+                       [src]="'products/'+productosMap.get(prod.productoId)?.imgUrl" 
                        [alt]="productosMap.get(prod.productoId)?.nombre" 
                        class="w-14 h-14 object-cover rounded-lg shadow-sm">
                   <div *ngIf="!productosMap.get(prod.productoId)?.imgUrl" 

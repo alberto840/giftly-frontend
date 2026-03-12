@@ -178,7 +178,7 @@
         <ng-template pTemplate="body" let-prod>
             <tr>
                 <td>
-                    <img [src]="'.//public/products/' + prod.imgUrl" [alt]="prod.nombre" width="50" class="shadow-2" />
+                    <img [src]="'products/' + prod.imgUrl" [alt]="prod.nombre" width="50" class="shadow-2" />
                 </td>
                 <td>{{prod.nombre}}</td>
                 <td>{{prod.precio | currency}}</td>

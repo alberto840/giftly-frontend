@@ -17,7 +17,12 @@
                 </div>
                 <div>
                     <div class="text-xl font-bold text-purple-900">{{ usuario?.nombreCompl }}</div>
-                    <div class="text-gray-500 text-sm">{{ usuario?.email }}</div>
+                    <div class="text-gray-500 text-sm mb-2">{{ usuario?.email }}</div>
+                    <button (click)="navigateToOrders()" 
+                        class="px-4 py-1.5 bg-purple-100 text-purple-700 text-xs font-bold rounded-full hover:bg-purple-200 transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-box-open"></i>
+                        Ver Mis Pedidos
+                    </button>
                 </div>
             </div>
 
@@ -162,7 +167,7 @@
         <ng-container *ngIf="!loadingProducto && dialogProducto">
             <!-- Imagen -->
             <div class="w-36 h-36 rounded-2xl overflow-hidden border-2 border-purple-200 shadow-md">
-                <img *ngIf="dialogProducto.imgUrl" [src]="'.//public/products/' + dialogProducto.imgUrl"
+                <img *ngIf="dialogProducto.imgUrl" [src]="'products/' + dialogProducto.imgUrl"
                     [alt]="dialogProducto.nombre"
                     class="w-full h-full object-cover">
                 <div *ngIf="!dialogProducto.imgUrl"
