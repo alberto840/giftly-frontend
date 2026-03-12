@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: "https://.com/",
+  apiUrl: "https://giftly-backend-p0o6.onrender.com",
 };
