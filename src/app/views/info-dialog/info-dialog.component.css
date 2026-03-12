@@ -10,3 +10,9 @@
     border: none;
     box-shadow: none;
 }
+
+@media (max-width: 640px) {
+    ::ng-deep .p-dialog-content {
+        padding-top: 60px;
+    }
+}

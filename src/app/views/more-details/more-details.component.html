@@ -1,6 +1,6 @@
 <div class="min-h-screen flex flex-col items-center justify-center"
     style="background: linear-gradient(135deg, #fef5e6 0%, #face83 100%);">
-    <div class="text-2xl font-medium text-accent mb-6">
+    <div class="text-2xl text-center font-medium text-accent mb-6">
         ¿Como será la entrega del regalo?
         <p-button icon="pi pi-question" severity="secondary" aria-label="Save" (click)="openDialog()" />
     </div>
@@ -8,7 +8,7 @@
         <!-- Main Card -->
         <div class="bg-white rounded-[1rem] p-8 shadow-xl relative z-10">
             <!-- Header -->
-            <div class="flex justify-between items-center mb-8">
+            <div class="flex justify-between items-center">
                 <form [formGroup]="pedidoForm" class="w-full">
                     <div formGroupName="detallePedido" class="space-y-5 w-full">
                         <div class="pb-2">
@@ -56,7 +56,7 @@
         </div>
 
         <!-- Bottom Elements -->
-        <div class="absolute -bottom-11 left-0 w-full flex justify-between items-end px-8 z-20">
+        <div class="absolute -bottom-6 sm:bottom-[-4] left-0 w-full flex justify-between items-end px-8 z-20">
             <!-- User Icon -->
             <div class="bg-accent rounded-full p-4 shadow-lg">
                 <i class="fa-solid fa-phone-volume text-2xl text-white"></i>

@@ -25,3 +25,14 @@
     padding-left: 0.5% !important;
     padding-right: 0.5% !important;
 }
+
+@media (max-width: 640px) {
+    ::ng-deep .p-timeline-event-opposite {
+        display: none !important;
+    }
+
+    ::ng-deep .p-timeline-event-content {
+        margin-top: 2% !important;
+        margin-bottom: 2% !important;
+    }
+}

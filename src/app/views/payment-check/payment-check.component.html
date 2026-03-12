@@ -1,19 +1,26 @@
 <div class="min-h-screen flex flex-col items-center justify-center"
     style="background: linear-gradient(135deg, #eee0fb 0%, #c999f4 100%);">
-    <div class="text-2xl font-medium text-purple-900 mb-6">
+    <div class="text-2xl text-center font-medium text-purple-900 mb-6">
         ¡Felicidades solo te falta un paso!
         <p-button icon="pi pi-question" severity="secondary" aria-label="Save" (click)="openDialog()" />
     </div>
     <div class="relative w-full max-w-xl">
         <!-- Main Card -->
-        <div class="bg-white rounded-[1rem] p-8 shadow-xl relative z-10">
+        <div
+            class="bg-white rounded-[1rem] p-5 sm:p-8 m-1 overflow-y-auto max-h-[calc(100vh-15rem)] sm:max-h-[calc(100vh-10rem)] shadow-xl relative z-10">
             <div
-                class="bg-white border-2 border-purple-500 rounded-2xl p-4 w-full mb-4 shadow-sm flex items-center gap-4">
+                class="bg-white flex flex-col md:flex-row border-2 border-purple-500 rounded-2xl p-4 w-full mb-4 shadow-sm flex items-center gap-4">
                 <i class="fa-solid fa-gift"></i>
-                <div class="text-left align-center">
+                <div class="flex text-left align-center">
                     Total a pagar:
+
+                    <div class="flex sm:hidden pl-1 sm:pl-0 text-right align-center">
+                        <!-- TODO: mostrar el total del pedido -->
+                        {{ pedidoForm.value.pedido?.total ? pedidoForm.value.pedido?.total : 0 | currency }} Bs.
+
+                    </div>
                 </div>
-                <div class="text-right align-center">
+                <div class="hidden sm:flex text-right align-center">
                     <!-- TODO: mostrar el total del pedido -->
                     {{ pedidoForm.value.pedido?.total ? pedidoForm.value.pedido?.total : 0 | currency }} Bs.
 
@@ -23,7 +30,7 @@
                         (click)="openProductosDialog()" />
                 </div>
             </div>
-            <div class="flex flex-row items-center bg-purple-600 rounded-xl mb-4">
+            <div class="flex flex-col md:flex-row items-center bg-purple-600 rounded-xl mb-4">
                 <!-- QR Placeholder -->
                 <div class=" p-4 inline-block">
                     <div class="bg-white rounded-lg">
@@ -78,7 +85,7 @@
         </div>
 
         <!-- Bottom Elements -->
-        <div class="absolute -bottom-9 left-0 w-full flex justify-between items-end px-8 z-20">
+        <div class="absolute hidden sm:flex -bottom-9 left-0 w-full flex justify-between items-end px-8 z-20">
             <!-- User Icon -->
             <div class="bg-purple-600 rounded-full p-4 shadow-lg">
                 <i class="fa-solid fa-gift text-2xl text-white"></i>
@@ -88,7 +95,8 @@
 </div>
 
 <!-- Pantalla de Carga / Confirmación -->
-<div *ngIf="isSubmitting || showConfirmation" class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center backdrop-blur-sm">
+<div *ngIf="isSubmitting || showConfirmation"
+    class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center backdrop-blur-sm">
     <div class="bg-white p-8 rounded-2xl shadow-xl max-w-sm w-full text-center m-4">
         <!-- Loading specific view -->
         <ng-container *ngIf="isSubmitting && !showConfirmation">
@@ -103,8 +111,10 @@
                 <i class="fa-solid fa-circle-check text-5xl"></i>
             </div>
             <h3 class="text-xl font-bold text-gray-800 mb-2">¡Pago en revisión!</h3>
-            <p class="text-gray-600 mb-6">Se verificará tu pago y se te confirmará la orden por tu número de celular, revisa "mis pedidos".</p>
-            <p-button *ngIf="usuarioId" label="Ir a mis pedidos" severity="primary" class="w-full block" styleClass="w-full" (click)="goToMisPedidos()"></p-button>
+            <p class="text-gray-600 mb-6">Se verificará tu pago y se te confirmará la orden por tu número de celular,
+                revisa "mis pedidos".</p>
+            <p-button *ngIf="usuarioId" label="Ir a mis pedidos" severity="primary" class="w-full block"
+                styleClass="w-full" (click)="goToMisPedidos()"></p-button>
         </ng-container>
     </div>
 </div>

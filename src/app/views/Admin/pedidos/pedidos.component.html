@@ -1,6 +1,6 @@
-<div class="p-[60px] flex flex-col justify-center items-center w-full bg-primary">
+<div class="p-4 md:p-[60px] flex flex-col justify-center items-center min-h-screen w-full bg-primary">
     <div class="w-full mb-3 flex items-center gap-1">
-        <div class="text-5xl text-white font-bold">Gestión de Pedidos</div>
+        <div class="text-3xl md:text-5xl text-white font-bold">Gestión de Pedidos</div>
         <p-menu #menu [model]="items" [popup]="true" />
         <p-button (click)="menu.toggle($event)" icon="pi pi-spin pi-cog" [rounded]="true" [outlined]="true"
             severity="primary" [outlined]="true" />
@@ -15,9 +15,9 @@
         </div>
 
         <p-table class="w-full" #dt [value]="pedidos" [rows]="10" [paginator]="true" [globalFilterFields]="['id']"
-            [tableStyle]="{'min-width': '75rem'}" [rowHover]="true" dataKey="id"
+            [rowHover]="true" dataKey="id"
             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
-            [showCurrentPageReport]="true">
+            [showCurrentPageReport]="true" [scrollable]="true" scrollDirection="horizontal">
 
             <ng-template pTemplate="header">
                 <tr>

@@ -41,7 +41,7 @@
         <!-- Detalle de productos -->
         <div class="p-4" *ngIf="item.productos && item.productos.length > 0">
           <div class="flex justify-between items-center mb-3">
-            <h4 class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Productos</h4>
+            <div class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Productos</div>
             <button (click)="toggleDetails(item.pedido.id)" 
                     class="text-sm font-semibold text-purple-600 hover:text-purple-800 transition-colors flex items-center gap-1">
               {{expandedOrderId === item.pedido.id ? 'Ocultar Detalles' : 'Ver Detalles'}}
